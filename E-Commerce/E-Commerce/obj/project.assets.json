@@ -4437,26 +4437,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Elmer\\.nuget\\packages\\": {}
+    "C:\\Users\\Camilo\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Elmer\\Desktop\\dga\\E-Commerce\\E-Commerce\\E-Commerce.csproj",
+      "projectUniqueName": "C:\\Users\\Camilo\\OneDrive - TECNOAMERICA\\Documentos\\proyecto-dga\\e-commerce\\E-Commerce\\E-Commerce\\E-Commerce.csproj",
       "projectName": "E-Commerce",
-      "projectPath": "C:\\Users\\Elmer\\Desktop\\dga\\E-Commerce\\E-Commerce\\E-Commerce.csproj",
-      "packagesPath": "C:\\Users\\Elmer\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Elmer\\Desktop\\dga\\E-Commerce\\E-Commerce\\obj\\",
+      "projectPath": "C:\\Users\\Camilo\\OneDrive - TECNOAMERICA\\Documentos\\proyecto-dga\\e-commerce\\E-Commerce\\E-Commerce\\E-Commerce.csproj",
+      "packagesPath": "C:\\Users\\Camilo\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Camilo\\OneDrive - TECNOAMERICA\\Documentos\\proyecto-dga\\e-commerce\\E-Commerce\\E-Commerce\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Elmer\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\Camilo\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -4526,7 +4524,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.205/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
