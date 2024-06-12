@@ -2,27 +2,27 @@ E-Commerce/.vs/
 E-Commerce/E-Commerce/bin/
 E-Commerce/E-Commerce/obj/
 # Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+front-end/e-commerce-front/logs
+front-end/e-commerce-front/*.log
+front-end/e-commerce-front/npm-debug.log*
+front-end/e-commerce-front/yarn-debug.log*
+front-end/e-commerce-front/yarn-error.log*
+front-end/e-commerce-front/pnpm-debug.log*
+front-end/e-commerce-front/lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+front-end/e-commerce-front/node_modules
+front-end/e-commerce-front/dist
+front-end/e-commerce-front/dist-ssr
+front-end/e-commerce-front/*.local
 
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+front-end/e-commerce-front/.vscode/*
+front-end/e-commerce-front/!.vscode/extensions.json
+front-end/e-commerce-front/.idea
+front-end/e-commerce-front/.DS_Store
+front-end/e-commerce-front/*.suo
+front-end/e-commerce-front/*.ntvs*
+front-end/e-commerce-front/*.njsproj
+front-end/e-commerce-front/*.sln
+front-end/e-commerce-front/*.sw?
 
