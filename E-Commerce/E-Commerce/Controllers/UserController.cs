@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace E_Commerce.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : Controller
@@ -32,6 +32,7 @@ namespace E_Commerce.Controllers
         {
             return Ok(await _repo.get(lastpage,size));
         }
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Add(User user)
         {

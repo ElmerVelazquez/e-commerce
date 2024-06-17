@@ -2,11 +2,63 @@ using E_Commerce.Interfaces;
 using E_Commerce.Models;
 using E_Commerce.Repository;
 using E_Commerce.Utilities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+var config = builder.Configuration;
 // Add services to the container.
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(x =>
+{
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidIssuer = config["JwtSettings:Issuer"],
+        ValidAudience = config["JwtSettings:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey
+            (Encoding.UTF8.GetBytes(config["JwtSettings:key"]!)),
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true
+    };
+    x.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            // Log or handle the authentication failure
+            return Task.CompletedTask;
+        },
+        OnTokenValidated = context =>
+        {
+            // Additional custom validation logic can go here
+            return Task.CompletedTask;
+        },
+        OnChallenge = context =>
+        {
+            // Handle challenge event
+            return Task.CompletedTask;
+        }
+    };
+});
+builder.Services.AddAuthorization(
+//    options =>
+//{
+//    options.AddPolicy("AdminPolicy", policy =>
+//        policy.RequireRole("Admin"));
+//    options.AddPolicy("UserPolicy", policy =>
+//        policy.RequireClaim("UserType", "Regular"));
+//}
+);
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<EcommerceDbContext>(options =>
@@ -17,16 +69,33 @@ builder.Services.AddRepositories();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    // Definir el esquema de seguridad
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter into field the word 'Bearer' following by space and JWT",
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
 
-//builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
-//   .AddNegotiate();
+    // Habilitar el uso del esquema de seguridad en Swagger
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement{
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }});
+});
 
-//builder.Services.AddAuthorization(options =>
-//{
-    // By default, all incoming requests will be authorized according to the default policy.
-//    options.FallbackPolicy = options.DefaultPolicy;
-//});
 
 var app = builder.Build();
 
@@ -39,7 +108,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-//app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
