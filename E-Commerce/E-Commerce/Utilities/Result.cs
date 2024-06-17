@@ -15,7 +15,6 @@
         {
             return new Result(true, null);
         }
-
         public static Result Fail(string errorMessage)
         {
             return new Result(false, errorMessage);
