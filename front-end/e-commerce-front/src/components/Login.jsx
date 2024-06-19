@@ -26,7 +26,11 @@ function Login() {
 
     return (
         <>
+
             {/* Seccion del navbar */}
+
+            {/* Sección de la parte superior o NavBar */}
+
             <div className="flex bg-red-600 p-4 justify-between">
                 <h1 className="text-white text-2xl font-bold">
                     <a href="/">LincolnTech</a>
