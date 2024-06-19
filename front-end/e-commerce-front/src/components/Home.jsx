@@ -103,7 +103,7 @@ function Home() {
       </section>
 
       {/*Footer*/}
-      <footer className='bg-red-500 p-7'>
+      <footer className='bg-red-600 p-7'>
         <div className='flex justify-end space-x-6 mr-6'>
           <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
             <FaInstagram className='text-black text-2xl' />
