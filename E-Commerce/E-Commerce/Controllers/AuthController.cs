@@ -37,8 +37,8 @@ namespace E_Commerce.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Email)
-                    //new Claim(ClaimTypes.Role, user.Role)
+                    new Claim(ClaimTypes.Name, user.Email),
+                    //new Claim(ClaimTypes.Role, user.Rol)
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 Issuer = _configuration["jwtSettings:Issuer"],
@@ -54,6 +54,7 @@ namespace E_Commerce.Controllers
         {
             public required string Email { get; set; }
             public required string Password { get; set; }
+            //public string? Rol { get; set; }
         }
     }
 }

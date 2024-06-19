@@ -195,7 +195,6 @@ public partial class EcommerceDbContext : DbContext
             entity.HasIndex(e => e.Email, "UQ__Users__AB6E616485D4CFEF").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.AddressId).HasColumnName("address_id");
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .HasColumnName("email");
@@ -208,14 +207,14 @@ public partial class EcommerceDbContext : DbContext
             entity.Property(e => e.Phone)
                 .HasMaxLength(20)
                 .HasColumnName("phone");
+            entity.Property(e => e.Rol)
+                .HasMaxLength(50)                
+                .HasColumnName("userrol");
             entity.Property(e => e.RegistrationDate)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("registration_date");
 
-            entity.HasOne(d => d.Address).WithMany(p => p.Users)
-                .HasForeignKey(d => d.AddressId)
-                .HasConstraintName("FK__Users__address_i__3C69FB99");
         });
 
         OnModelCreatingPartial(modelBuilder);

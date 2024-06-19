@@ -1,9 +1,10 @@
-﻿using System;
+﻿using E_Commerce.Interfaces;
+using System;
 using System.Collections.Generic;
 
 namespace E_Commerce.Models;
 
-public partial class Category
+public partial class Category : InterfaceId
 {
     public int Id { get; set; }
 

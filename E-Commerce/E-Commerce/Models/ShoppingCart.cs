@@ -1,9 +1,10 @@
-﻿using System;
+﻿using E_Commerce.Interfaces;
+using System;
 using System.Collections.Generic;
 
 namespace E_Commerce.Models;
 
-public partial class ShoppingCart
+public partial class ShoppingCart : InterfaceId
 {
     public int Id { get; set; }
 

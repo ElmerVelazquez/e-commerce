@@ -1,9 +1,10 @@
-﻿using System;
+﻿using E_Commerce.Interfaces;
+using System;
 using System.Collections.Generic;
 
 namespace E_Commerce.Models;
 
-public partial class CartItem
+public partial class CartItem : InterfaceId
 {
     public int Id { get; set; }
 
