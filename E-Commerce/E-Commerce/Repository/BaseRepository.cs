@@ -20,7 +20,7 @@ namespace E_Commerce.Repository
             _mapper = mapper;
 
         }
-        public async Task<Result<List<Entity>>> get()
+        public virtual async Task<Result<List<Entity>>> get()
         {
             var registros = await _dbSet.ToListAsync();
             if (registros == null)

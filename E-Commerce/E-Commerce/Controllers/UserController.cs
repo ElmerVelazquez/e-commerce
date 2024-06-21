@@ -8,7 +8,7 @@ using System.Drawing;
 
 namespace E_Commerce.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : Controller
@@ -47,6 +47,7 @@ namespace E_Commerce.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
             return Ok(await _repo.update(userdto, id));
         }
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

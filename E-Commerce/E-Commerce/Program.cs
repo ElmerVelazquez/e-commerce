@@ -57,19 +57,19 @@ builder.Services.AddAuthentication(x =>
         OnForbidden = context =>
         {
             context.Response.StatusCode = StatusCodes.Status403Forbidden;
-            // Handle forbidden event
-            return Task.CompletedTask;
+            context.Response.ContentType = "text/plain";
+            return context.Response.WriteAsync("Acceso denegado.");
         }
     };
 });
 builder.Services.AddAuthorization(
-//    options =>
-//{
-//    options.AddPolicy("AdminPolicy", policy =>
-//        policy.RequireRole("admin"));
-//    options.AddPolicy("UserPolicy", policy =>
-//        policy.RequireClaim("UserType", "regular"));
-//}
+    options =>
+{
+    options.AddPolicy("AdminPolicy", policy =>
+        policy.RequireRole("admin"));
+    options.AddPolicy("UserPolicy", policy =>
+        policy.RequireClaim("UserType", "regular"));
+}
 );
 var mapperConfig = new MapperConfiguration(config =>
 {
@@ -78,7 +78,10 @@ var mapperConfig = new MapperConfiguration(config =>
 IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+});
 builder.Services.AddDbContext<EcommerceDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default"))
 );

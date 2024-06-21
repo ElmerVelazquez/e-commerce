@@ -13,6 +13,7 @@ namespace E_Commerce.Utilities
             services.AddScoped<IBaseRepository<Category>, BaseRepository<Category>>();
             services.AddScoped<IBaseRepository<Address>, BaseRepository<Address>>();
             services.AddScoped<IBaseRepository<CartItem>, BaseRepository<CartItem>>();
+            services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
             services.AddScoped<IBaseRepository<Order>, BaseRepository<Order>>();
             services.AddScoped<IBaseRepository<OrderDetail>, BaseRepository<OrderDetail>>();
 

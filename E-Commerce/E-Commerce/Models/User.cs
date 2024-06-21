@@ -23,7 +23,7 @@ public partial class User: InterfaceId
 
     public string? Phone { get; set; }
 
-    public string Rol { get; set; } = "Regular";
+    public string Rol { get; set; } = "regular";
 
     public DateTime? RegistrationDate { get; set; }
 

@@ -7,45 +7,42 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace E_Commerce.Controllers
 {
-    [Authorize(Roles = "admin")]
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoryController : ControllerBase
+    public class ShoppingCartController : ControllerBase
     {
-        private readonly IBaseRepository<Category> _repo;
-        public CategoryController(IBaseRepository<Category> repo)
+        private readonly IShoppingCartRepository _repo;
+        public ShoppingCartController(IShoppingCartRepository repo)
         {
             _repo = repo;
         }
-        [Authorize(Roles = "regular")]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             return Ok(await _repo.get());
         }
-        [Authorize(Roles = "regular")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             return Ok(await _repo.get(id));
         }
-        [Authorize(Roles = "regular")]
         [HttpGet("{lastpage}&{size}")]
         public async Task<IActionResult> Get(int lastpage, int size)
         {
             return Ok(await _repo.get(lastpage, size));
         }
+        [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Add(CategoryDto categorydto)
+        public async Task<IActionResult> Add(ShoppingCartDto shoppingcartdto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            return Ok(await _repo.add(categorydto));
+            return Ok(await _repo.add(shoppingcartdto));
         }
         [HttpPut]
-        public async Task<IActionResult> Update(CategoryDto categorydto, int id)
+        public async Task<IActionResult> Update(ShoppingCartDto shoppingcartdto, int id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            return Ok(await _repo.update(categorydto, id));
+            return Ok(await _repo.update(shoppingcartdto, id));
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
