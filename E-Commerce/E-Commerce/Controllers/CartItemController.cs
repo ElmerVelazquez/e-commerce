@@ -1,20 +1,18 @@
 ﻿using E_Commerce.DTO;
 using E_Commerce.Interfaces;
 using E_Commerce.Models;
-using E_Commerce.Utilities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Drawing;
 
 namespace E_Commerce.Controllers
 {
-    [Authorize(Roles = "admin")]
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : Controller
+    public class CartItemController : ControllerBase
     {
-        private readonly IUserRepository _repo;
-        public UserController(IUserRepository repo)
+        private readonly IBaseRepository<CartItem> _repo;
+        public CartItemController(IBaseRepository<CartItem> repo)
         {
             _repo = repo;
         }
@@ -31,23 +29,21 @@ namespace E_Commerce.Controllers
         [HttpGet("{lastpage}&{size}")]
         public async Task<IActionResult> Get(int lastpage, int size)
         {
-            return Ok(await _repo.get(lastpage,size));
+            return Ok(await _repo.get(lastpage, size));
         }
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Add(UserDto userdto)
+        public async Task<IActionResult> Add(CartItemDto cartitemdto)
         {
-            if (await _repo.EmailExist(userdto.Email)) return BadRequest("El email ya existe");
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            return Ok(await _repo.add(userdto));
+            return Ok(await _repo.add(cartitemdto));
         }
         [HttpPut]
-        public async Task<IActionResult> Update(UserDto userdto, int id)
+        public async Task<IActionResult> Update(CartItemDto cartitemdto, int id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            return Ok(await _repo.update(userdto, id));
+            return Ok(await _repo.update(cartitemdto, id));
         }
-        
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

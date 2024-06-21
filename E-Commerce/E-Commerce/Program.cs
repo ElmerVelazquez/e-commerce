@@ -1,3 +1,4 @@
+using AutoMapper;
 using E_Commerce.Interfaces;
 using E_Commerce.Models;
 using E_Commerce.Repository;
@@ -35,32 +36,52 @@ builder.Services.AddAuthentication(x =>
     {
         OnAuthenticationFailed = context =>
         {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+
             // Log or handle the authentication failure
             return Task.CompletedTask;
         },
         OnTokenValidated = context =>
         {
+            context.Response.StatusCode = StatusCodes.Status200OK;
+
             // Additional custom validation logic can go here
             return Task.CompletedTask;
         },
         OnChallenge = context =>
         {
             // Handle challenge event
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             return Task.CompletedTask;
+        },
+        OnForbidden = context =>
+        {
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            context.Response.ContentType = "text/plain";
+            return context.Response.WriteAsync("Acceso denegado.");
         }
     };
 });
 builder.Services.AddAuthorization(
-//    options =>
-//{
-//    options.AddPolicy("AdminPolicy", policy =>
-//        policy.RequireRole("Admin"));
-//    options.AddPolicy("UserPolicy", policy =>
-//        policy.RequireClaim("UserType", "Regular"));
-//}
+    options =>
+{
+    options.AddPolicy("AdminPolicy", policy =>
+        policy.RequireRole("admin"));
+    options.AddPolicy("UserPolicy", policy =>
+        policy.RequireClaim("UserType", "regular"));
+}
 );
+var mapperConfig = new MapperConfiguration(config =>
+{
+    config.AddProfile(new MapperProfile());
+});
+IMapper mapper = mapperConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+});
 builder.Services.AddDbContext<EcommerceDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default"))
 );
@@ -95,7 +116,6 @@ builder.Services.AddSwaggerGen(c =>
             Array.Empty<string>()
         }});
 });
-
 
 var app = builder.Build();
 

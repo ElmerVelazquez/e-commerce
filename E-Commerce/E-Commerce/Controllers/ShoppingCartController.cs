@@ -1,20 +1,18 @@
 ﻿using E_Commerce.DTO;
 using E_Commerce.Interfaces;
 using E_Commerce.Models;
-using E_Commerce.Utilities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Drawing;
 
 namespace E_Commerce.Controllers
 {
-    [Authorize(Roles = "admin")]
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : Controller
+    public class ShoppingCartController : ControllerBase
     {
-        private readonly IUserRepository _repo;
-        public UserController(IUserRepository repo)
+        private readonly IShoppingCartRepository _repo;
+        public ShoppingCartController(IShoppingCartRepository repo)
         {
             _repo = repo;
         }
@@ -31,23 +29,21 @@ namespace E_Commerce.Controllers
         [HttpGet("{lastpage}&{size}")]
         public async Task<IActionResult> Get(int lastpage, int size)
         {
-            return Ok(await _repo.get(lastpage,size));
+            return Ok(await _repo.get(lastpage, size));
         }
         [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Add(UserDto userdto)
+        public async Task<IActionResult> Add(ShoppingCartDto shoppingcartdto)
         {
-            if (await _repo.EmailExist(userdto.Email)) return BadRequest("El email ya existe");
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            return Ok(await _repo.add(userdto));
+            return Ok(await _repo.add(shoppingcartdto));
         }
         [HttpPut]
-        public async Task<IActionResult> Update(UserDto userdto, int id)
+        public async Task<IActionResult> Update(ShoppingCartDto shoppingcartdto, int id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            return Ok(await _repo.update(userdto, id));
+            return Ok(await _repo.update(shoppingcartdto, id));
         }
-        
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

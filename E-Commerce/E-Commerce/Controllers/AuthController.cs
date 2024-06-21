@@ -1,9 +1,13 @@
 ﻿using E_Commerce.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -21,7 +25,6 @@ namespace E_Commerce.Controllers
             _configuration = configuration;
             _context = context;
         }
-        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserLogin user)
         {
@@ -37,23 +40,26 @@ namespace E_Commerce.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Email)
-                    //new Claim(ClaimTypes.Role, user.Role)
+                    new Claim(ClaimTypes.Name, user.Email),
+                    new Claim(ClaimTypes.Role, regis.Rol)
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 Issuer = _configuration["jwtSettings:Issuer"],
                 Audience = _configuration["jwtSettings:Audience"],
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
+
             var token = tokenhandler.CreateToken(tokenDescriptor);
             var tokenString = tokenhandler.WriteToken(token);
 
-            return Ok(new { Token = tokenString });
+            return Ok(new { rol= regis.Rol, Token = tokenString });
         }
         public class UserLogin
         {
             public required string Email { get; set; }
             public required string Password { get; set; }
+            
         }
+      
     }
 }

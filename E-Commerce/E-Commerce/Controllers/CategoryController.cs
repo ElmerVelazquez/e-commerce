@@ -1,53 +1,52 @@
 ﻿using E_Commerce.DTO;
 using E_Commerce.Interfaces;
 using E_Commerce.Models;
-using E_Commerce.Utilities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Drawing;
 
 namespace E_Commerce.Controllers
 {
     [Authorize(Roles = "admin")]
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : Controller
+    public class CategoryController : ControllerBase
     {
-        private readonly IUserRepository _repo;
-        public UserController(IUserRepository repo)
+        private readonly IBaseRepository<Category> _repo;
+        public CategoryController(IBaseRepository<Category> repo)
         {
             _repo = repo;
         }
+        [Authorize(Roles = "regular")]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             return Ok(await _repo.get());
         }
+        [Authorize(Roles = "regular")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             return Ok(await _repo.get(id));
         }
+        [Authorize(Roles = "regular")]
         [HttpGet("{lastpage}&{size}")]
         public async Task<IActionResult> Get(int lastpage, int size)
         {
-            return Ok(await _repo.get(lastpage,size));
+            return Ok(await _repo.get(lastpage, size));
         }
-        [AllowAnonymous]
         [HttpPost]
-        public async Task<IActionResult> Add(UserDto userdto)
+        public async Task<IActionResult> Add(CategoryDto categorydto)
         {
-            if (await _repo.EmailExist(userdto.Email)) return BadRequest("El email ya existe");
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            return Ok(await _repo.add(userdto));
+            return Ok(await _repo.add(categorydto));
         }
         [HttpPut]
-        public async Task<IActionResult> Update(UserDto userdto, int id)
+        public async Task<IActionResult> Update(CategoryDto categorydto, int id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            return Ok(await _repo.update(userdto, id));
+            return Ok(await _repo.update(categorydto, id));
         }
-        
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

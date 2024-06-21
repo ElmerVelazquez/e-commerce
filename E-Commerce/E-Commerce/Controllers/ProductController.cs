@@ -1,4 +1,5 @@
-﻿using E_Commerce.Interfaces;
+﻿using E_Commerce.DTO;
+using E_Commerce.Interfaces;
 using E_Commerce.Models;
 using E_Commerce.Repository;
 using Microsoft.AspNetCore.Authorization;
@@ -13,45 +14,45 @@ namespace E_Commerce.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IProductRepository _product;
-        public ProductController(IProductRepository product)
+        private readonly IBaseRepository<Product> _repo;
+        public ProductController(IBaseRepository<Product> product)
         {
-            _product = product;
+            _repo = product;
         }
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            return Ok(await _product.get());
+            return Ok(await _repo.get());
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            return Ok(await _product.get(id));
+            return Ok(await _repo.get(id));
         }
         [HttpGet("{lastpage}&{size}")]
         public async Task<IActionResult> Get(int lastpage, int size)
         {
-            return Ok(await _product.get(lastpage, size));
+            return Ok(await _repo.get(lastpage, size));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(Product product)
+        public async Task<IActionResult> Add(ProductDto productdto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            return Ok(await _product.add(product));
+            return Ok(await _repo.add(productdto));
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update(Product product)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(ProductDto productdto, int id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            return Ok(await _product.update(product));
+            return Ok(await _repo.update(productdto, id));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            return Ok(await _product.delete(id));
+            return Ok(await _repo.delete(id));
         }
     }
 }
