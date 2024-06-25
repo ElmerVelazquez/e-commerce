@@ -1,5 +1,6 @@
 using AutoMapper;
 using E_Commerce.Interfaces;
+using E_Commerce.Middlewares;
 using E_Commerce.Models;
 using E_Commerce.Repository;
 using E_Commerce.Utilities;
@@ -69,6 +70,7 @@ builder.Services.AddAuthorization(
         policy.RequireRole("admin"));
     options.AddPolicy("UserPolicy", policy =>
         policy.RequireClaim("UserType", "regular"));
+
 }
 );
 var mapperConfig = new MapperConfiguration(config =>
@@ -130,6 +132,8 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<AuthorizationMiddleware>();
 
 app.MapControllers();
 

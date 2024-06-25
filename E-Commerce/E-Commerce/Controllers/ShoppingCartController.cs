@@ -16,34 +16,39 @@ namespace E_Commerce.Controllers
         {
             _repo = repo;
         }
+        [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             return Ok(await _repo.get());
         }
+        [Authorize(Roles = "admin")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             return Ok(await _repo.get(id));
         }
+        [Authorize(Roles = "admin")]
         [HttpGet("{lastpage}&{size}")]
         public async Task<IActionResult> Get(int lastpage, int size)
         {
             return Ok(await _repo.get(lastpage, size));
         }
-        [AllowAnonymous]
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> Add(ShoppingCartDto shoppingcartdto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             return Ok(await _repo.add(shoppingcartdto));
         }
+        [Authorize(Roles = "admin")]
         [HttpPut]
         public async Task<IActionResult> Update(ShoppingCartDto shoppingcartdto, int id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             return Ok(await _repo.update(shoppingcartdto, id));
         }
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

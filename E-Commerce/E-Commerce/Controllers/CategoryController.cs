@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace E_Commerce.Controllers
 {
-    [Authorize(Roles = "admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase
@@ -17,36 +16,39 @@ namespace E_Commerce.Controllers
         {
             _repo = repo;
         }
-        [Authorize(Roles = "regular")]
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             return Ok(await _repo.get());
         }
-        [Authorize(Roles = "regular")]
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             return Ok(await _repo.get(id));
         }
-        [Authorize(Roles = "regular")]
+        [AllowAnonymous]        
         [HttpGet("{lastpage}&{size}")]
         public async Task<IActionResult> Get(int lastpage, int size)
         {
             return Ok(await _repo.get(lastpage, size));
         }
+        [Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> Add(CategoryDto categorydto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             return Ok(await _repo.add(categorydto));
         }
+        [Authorize(Roles = "admin")]
         [HttpPut]
         public async Task<IActionResult> Update(CategoryDto categorydto, int id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             return Ok(await _repo.update(categorydto, id));
         }
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

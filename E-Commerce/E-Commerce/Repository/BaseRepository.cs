@@ -29,7 +29,7 @@ namespace E_Commerce.Repository
             }
             return Result<List<Entity>>.Success(registros);
         }
-        public async Task<Result<Entity>> get(int id)
+        public virtual async Task<Result<Entity>> get(int id)
         {
             var registro = await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
             if (registro == null)
@@ -38,11 +38,11 @@ namespace E_Commerce.Repository
             }
             return Result<Entity>.Success(registro);
         }
-        public async Task<Result<List<Entity>>> get(int lastpage, int size)
+        public virtual async Task<Result<List<Entity>>> get(int page, int size)
         {
             var registro = await _dbSet
               .OrderBy(t => t.Id)
-              .Where(b => b.Id > lastpage)
+              .Where(b => b.Id >= page)
               .Take(size)
               .ToListAsync();
             return Result<List<Entity>>.Success(registro);
@@ -75,6 +75,10 @@ namespace E_Commerce.Repository
             _dbSet.Remove(registro);
             await _context.SaveChangesAsync();
             return Result<Entity>.Success(registro);
+        }
+        public async Task GetId()
+        {
+
         }
     }
 }

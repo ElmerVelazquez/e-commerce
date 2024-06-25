@@ -2,7 +2,7 @@
 
 namespace E_Commerce.Interfaces
 {
-    public interface IShoppingCartRepository : IBaseRepository<ShoppingCart>
+    public interface IOrderRepository: IBaseRepository<Order>
     {
     }
 }

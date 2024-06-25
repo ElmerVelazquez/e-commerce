@@ -1,9 +1,5 @@
 ﻿using E_Commerce.Models;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -25,14 +21,13 @@ namespace E_Commerce.Controllers
             _configuration = configuration;
             _context = context;
         }
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserLogin user)
         {
-            if (!await _context.Users.AnyAsync(x => x.Email.Equals(user.Email))) return Unauthorized("Correo invalido");      
-            var regis =await _context.Users.Where(x => user.Email.Equals(x.Email)).FirstAsync();
-            if (regis == null) return NotFound();
-            if (!user.Password.Equals(regis.Password)) return Unauthorized("contraseña invalida");
-
+            var regis = await _context.Users.Where(x => user.Email.Equals(x.Email)).FirstAsync();
+            if (regis == null) return NotFound("usuario no encontrado");
+            if (!regis.Email.Equals(user.Email) && !regis.Password.Equals(user.Password)) return Unauthorized("Credenciales invalidas");      
 
             var tokenhandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration["jwtSettings:Key"]);
@@ -40,6 +35,7 @@ namespace E_Commerce.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
+                    new Claim(ClaimTypes.NameIdentifier, regis.Id.ToString()),
                     new Claim(ClaimTypes.Name, user.Email),
                     new Claim(ClaimTypes.Role, regis.Rol)
                 }),
