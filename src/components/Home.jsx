@@ -1,5 +1,3 @@
-// src/components/Home.jsx
-import React from 'react';
 import Buscador from './Buscador';
 import { FaShoppingCart, FaUser, FaInstagram, FaFacebookF, FaLinkedinIn } from 'react-icons/fa';
 import frontUno from '../assets/frontUno.png';
@@ -53,7 +51,7 @@ function Home() {
       {/*Sección de Laptops */}
       <section className="">
         <h2 className="mt-5 ml-5 font-bold">
-          <a href="">Ver Laptops</a>
+          <a href="/laptops">Ver Laptops</a>
         </h2>
         <div className="grid grid-cols-4 justify-center mx-auto mt-10 w-3/4">
           <a href=""><img src={frontApple} alt="Lapto Mcbook" className="" /></a>
@@ -103,16 +101,16 @@ function Home() {
       </section>
 
       {/*Footer*/}
-      <footer className='bg-red-500 p-7'>
+      <footer className='bg-red-600 p-7'>
         <div className='flex justify-end space-x-6 mr-6'>
           <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
-            <FaInstagram className='text-black text-2xl' />
+            <FaInstagram className='text-white text-2xl' />
           </a>
           <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">
-            <FaFacebookF className='text-black text-2xl' />
+            <FaFacebookF className='text-white text-2xl' />
           </a>
           <a href="https://www.linkedin.com" target="_blank" rel="noopener noreferrer">
-            <FaLinkedinIn className='text-black text-2xl' />
+            <FaLinkedinIn className='text-white text-2xl' />
           </a>
         </div>
       </footer>
