@@ -23,5 +23,27 @@ namespace E_Commerce.Repository
             }
             return Result<List<ShoppingCart>>.Success(registros);
         }
+        public override async Task<Result<ShoppingCart>> get(int id)
+        {
+            var registro = await _context.ShoppingCarts
+                .Include(u => u.CartItems)
+                .FirstOrDefaultAsync(x => x.Id == id);
+            if (registro == null)
+            {
+                return Result<ShoppingCart>.Fail("id no encontrado");
+            }
+            return Result<ShoppingCart>.Success(registro);
+        }
+        public override async Task<Result<List<ShoppingCart>>> get(int page, int size)
+        {
+            var registro = await _context.ShoppingCarts
+              .OrderBy(t => t.Id)
+              .Where(b => b.Id >= page)
+              .Take(size)
+              .Include(u => u.CartItems)
+              .ToListAsync();
+            return Result<List<ShoppingCart>>.Success(registro);
+        }
+
     }
 }

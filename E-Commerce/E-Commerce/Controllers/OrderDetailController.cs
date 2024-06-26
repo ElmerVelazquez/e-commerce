@@ -11,43 +11,54 @@ namespace E_Commerce.Controllers
     [ApiController]
     public class OrderDetailController : ControllerBase
     {
-        private readonly IBaseRepository<OrderDetail> _repo;
-        public OrderDetailController(IBaseRepository<OrderDetail> repo)
+        private readonly IOrderDetailRepository _repo;
+        public OrderDetailController(IOrderDetailRepository repo)
         {
             _repo = repo;
         }
+        [Authorize(Roles = "admin, regular")]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             return Ok(await _repo.get());
         }
+        [Authorize(Roles = "admin, regular")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             return Ok(await _repo.get(id));
         }
+        [Authorize(Roles = "admin, regular")]
         [HttpGet("{lastpage}&{size}")]
         public async Task<IActionResult> Get(int lastpage, int size)
         {
             return Ok(await _repo.get(lastpage, size));
         }
-        [AllowAnonymous]
+        [Authorize(Roles = "admin, regular")]
         [HttpPost]
         public async Task<IActionResult> Add(OrderDetailDto orderdetaildto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            return Ok(await _repo.add(orderdetaildto));
+            await _repo.add(orderdetaildto);
+            await _repo.updatetotalAsync(orderdetaildto.OrderId);
+            return Ok();
         }
+        [Authorize(Roles = "admin, regular")]
         [HttpPut]
         public async Task<IActionResult> Update(OrderDetailDto orderdetaildto, int id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            return Ok(await _repo.update(orderdetaildto, id));
+            await _repo.update(orderdetaildto, id);
+            await _repo.updatetotalAsync(orderdetaildto.OrderId);
+            return Ok();
         }
+        [Authorize(Roles = "admin, regular")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            return Ok(await _repo.delete(id));
+            await _repo.delete(id);
+            await _repo.updatetotalAsync(id);
+            return Ok();
         }
     }
 }
