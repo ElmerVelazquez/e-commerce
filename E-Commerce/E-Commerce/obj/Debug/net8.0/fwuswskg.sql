@@ -1,5 +1,0 @@
-﻿BEGIN TRANSACTION;
-GO
-
-ALTER TABLE [Users] DROP CONSTRAINT [FK__Users__address_i__3C69FB99];
-GO
