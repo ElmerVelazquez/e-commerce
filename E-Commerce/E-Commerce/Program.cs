@@ -20,8 +20,9 @@ builder.Configuration.AddAzureKeyVault(keyVaultEndpoint, new DefaultAzureCredent
 var config = builder.Configuration;
 if (builder.Environment.IsDevelopment())
 {
-    builder.Configuration.AddUserSecrets<Program>();
+   // builder.Configuration.AddUserSecrets<Program>();
 }
+builder.Configuration.AddUserSecrets<Program>();//
 // Add services to the container.
 builder.Services.AddAuthentication(x =>
 {
@@ -132,10 +133,11 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+   // app.UseSwagger();
+   // app.UseSwaggerUI();
 }
-
+app.UseSwagger();//
+app.UseSwaggerUI();//
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
