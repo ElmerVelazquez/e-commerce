@@ -1,6 +1,6 @@
 E-Commerce/.vs/
-E-Commerce/E-Commerce/bin/
-E-Commerce/E-Commerce/obj/
+#E-Commerce/E-Commerce/bin/
+#E-Commerce/E-Commerce/obj/
 # Logs
 front-end/e-commerce-front/logs
 front-end/e-commerce-front/*.log
