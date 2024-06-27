@@ -11,9 +11,18 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Azure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri"));
+builder.Configuration.AddAzureKeyVault(keyVaultEndpoint, new DefaultAzureCredential());
 var config = builder.Configuration;
+if (builder.Environment.IsDevelopment())
+{
+   // builder.Configuration.AddUserSecrets<Program>();
+}
+builder.Configuration.AddUserSecrets<Program>();//
 // Add services to the container.
 builder.Services.AddAuthentication(x =>
 {
@@ -124,10 +133,11 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+   // app.UseSwagger();
+   // app.UseSwaggerUI();
 }
-
+app.UseSwagger();//
+app.UseSwaggerUI();//
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

@@ -76,9 +76,6 @@ namespace E_Commerce.Repository
             await _context.SaveChangesAsync();
             return Result<Entity>.Success(registro);
         }
-        public async Task GetId()
-        {
 
-        }
     }
 }
