@@ -12,17 +12,20 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Azure.Identity;
+using Microsoft.Extensions.Hosting;
+using static System.Net.Mime.MediaTypeNames;
+using System.Runtime.CompilerServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri"));
-builder.Configuration.AddAzureKeyVault(keyVaultEndpoint, new DefaultAzureCredential());
+//var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri"));
+//builder.Configuration.AddAzureKeyVault(keyVaultEndpoint, new DefaultAzureCredential());
 var config = builder.Configuration;
 if (builder.Environment.IsDevelopment())
 {
    // builder.Configuration.AddUserSecrets<Program>();
 }
-builder.Configuration.AddUserSecrets<Program>();//
+//builder.Configuration.AddUserSecrets<Program>();//
 // Add services to the container.
 builder.Services.AddAuthentication(x =>
 {
@@ -148,3 +151,4 @@ app.UseMiddleware<AuthorizationMiddleware>();
 app.MapControllers();
 
 app.Run();
+

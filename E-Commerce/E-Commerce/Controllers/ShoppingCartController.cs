@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace E_Commerce.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/shoppingcarts")]
     [ApiController]
     public class ShoppingCartController : ControllerBase
     {
@@ -22,7 +22,7 @@ namespace E_Commerce.Controllers
         {
             return Ok(await _repo.get());
         }
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin,regular")]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -34,21 +34,21 @@ namespace E_Commerce.Controllers
         {
             return Ok(await _repo.get(lastpage, size));
         }
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, regular")]
         [HttpPost]
         public async Task<IActionResult> Add(ShoppingCartDto shoppingcartdto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             return Ok(await _repo.add(shoppingcartdto));
         }
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, regular")]
         [HttpPut]
         public async Task<IActionResult> Update(ShoppingCartDto shoppingcartdto, int id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             return Ok(await _repo.update(shoppingcartdto, id));
         }
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, regular")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
