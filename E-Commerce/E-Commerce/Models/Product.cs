@@ -27,6 +27,8 @@ public partial class Product: InterfaceId
 
     public DateTime? CreationDate { get; set; }
 
+    public string? UrlImg { get; set; }
+
     public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
 
     public virtual Category? Category { get; set; }

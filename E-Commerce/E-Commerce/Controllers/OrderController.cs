@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace E_Commerce.Controllers
 {
     
-    [Route("api/[controller]")]
+    [Route("api/orders")]
     [ApiController]   
     public class OrderController : ControllerBase
     {
@@ -17,7 +17,7 @@ namespace E_Commerce.Controllers
         {
             _repo = repo;
         }
-        [Authorize(Roles = "admin, regular")]
+        [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -29,7 +29,7 @@ namespace E_Commerce.Controllers
         {
             return Ok(await _repo.get(id));
         }
-        [Authorize(Roles = "admin, regular")]
+        [Authorize(Roles = "admin")]
         [HttpGet("{lastpage}&{size}")]
         public async Task<IActionResult> Get(int lastpage, int size)
         {
@@ -42,14 +42,14 @@ namespace E_Commerce.Controllers
             if (!ModelState.IsValid) return BadRequest(ModelState);
             return Ok(await _repo.add(orderdto));
         }
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, regular")]
         [HttpPut]
         public async Task<IActionResult> Update(OrderDto orderdto, int id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             return Ok(await _repo.update(orderdto, id));
         }
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, regular")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

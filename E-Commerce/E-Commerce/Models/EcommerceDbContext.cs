@@ -163,6 +163,8 @@ public partial class EcommerceDbContext : DbContext
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("price");
             entity.Property(e => e.Stock).HasColumnName("stock");
+            entity.Property(e => e.UrlImg)
+                .HasMaxLength(255);
 
             entity.HasOne(d => d.Category).WithMany(p => p.Products)
                 .HasForeignKey(d => d.CategoryId)

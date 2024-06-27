@@ -10,7 +10,7 @@ using System.Drawing;
 namespace E_Commerce.Controllers
 {
 
-    [Route("api/[controller]")]
+    [Route("api/users")]
     [ApiController]
     public class UserController : Controller
     {

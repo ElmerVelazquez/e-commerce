@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace E_Commerce.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/orderdetails")]
     [ApiController]
     public class OrderDetailController : ControllerBase
     {
@@ -16,7 +16,7 @@ namespace E_Commerce.Controllers
         {
             _repo = repo;
         }
-        [Authorize(Roles = "admin, regular")]
+        [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -28,7 +28,7 @@ namespace E_Commerce.Controllers
         {
             return Ok(await _repo.get(id));
         }
-        [Authorize(Roles = "admin, regular")]
+        [Authorize(Roles = "admin")]
         [HttpGet("{lastpage}&{size}")]
         public async Task<IActionResult> Get(int lastpage, int size)
         {
