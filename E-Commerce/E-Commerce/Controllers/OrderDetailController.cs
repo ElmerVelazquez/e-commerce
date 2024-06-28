@@ -40,6 +40,7 @@ namespace E_Commerce.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             await _repo.add(orderdetaildto);
+            await _repo.updatepriceAsync();
             await _repo.updatetotalAsync(orderdetaildto.OrderId);
             return Ok();
         }
@@ -49,6 +50,7 @@ namespace E_Commerce.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
             await _repo.update(orderdetaildto, id);
+            await _repo.updatepriceAsync(id);
             await _repo.updatetotalAsync(orderdetaildto.OrderId);
             return Ok();
         }
@@ -57,7 +59,6 @@ namespace E_Commerce.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             await _repo.delete(id);
-            await _repo.updatetotalAsync(id);
             return Ok();
         }
     }

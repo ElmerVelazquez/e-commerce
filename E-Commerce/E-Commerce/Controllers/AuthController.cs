@@ -10,7 +10,7 @@ using System.Text;
 
 namespace E_Commerce.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -48,7 +48,7 @@ namespace E_Commerce.Controllers
             var token = tokenhandler.CreateToken(tokenDescriptor);
             var tokenString = tokenhandler.WriteToken(token);
 
-            return Ok(new { rol= regis.Rol, Token = tokenString });
+            return Ok(new {id=regis.Id, rol= regis.Rol, Token = tokenString });
         }
         public class UserLogin
         {

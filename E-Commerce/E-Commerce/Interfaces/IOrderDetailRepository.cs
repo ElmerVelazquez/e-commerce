@@ -4,6 +4,7 @@ namespace E_Commerce.Interfaces
 {
     public interface IOrderDetailRepository : IBaseRepository<OrderDetail>
     {
-        public Task updatetotalAsync(int id);
+        public Task updatetotalAsync(int idorder);
+        public Task updatepriceAsync(int id = -1);
     }
 }
