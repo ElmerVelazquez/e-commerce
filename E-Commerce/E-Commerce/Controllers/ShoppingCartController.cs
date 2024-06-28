@@ -34,13 +34,13 @@ namespace E_Commerce.Controllers
         {
             return Ok(await _repo.get(lastpage, size));
         }
-        [Authorize(Roles = "admin, regular")]
-        [HttpPost]
-        public async Task<IActionResult> Add(ShoppingCartDto shoppingcartdto)
-        {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-            return Ok(await _repo.add(shoppingcartdto));
-        }
+        //[Authorize(Roles = "admin, regular")]
+        //[HttpPost]
+        //public async Task<IActionResult> Add(ShoppingCartDto shoppingcartdto)
+        //{
+        //    if (!ModelState.IsValid) return BadRequest(ModelState);
+        //    return Ok(await _repo.add(shoppingcartdto));
+        //}
         [Authorize(Roles = "admin, regular")]
         [HttpPut]
         public async Task<IActionResult> Update(ShoppingCartDto shoppingcartdto, int id)

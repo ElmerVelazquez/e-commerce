@@ -65,7 +65,7 @@ namespace E_Commerce.Repository
             await _context.SaveChangesAsync();
             return Result<Dto>.Success(dto);
         }
-        public async Task<Result<Entity>> delete(int id)
+        public virtual async Task<Result<Entity>> delete(int id)
         {
             var registro = _dbSet.FirstOrDefault(x => x.Id == id);
             if (registro == null)
