@@ -5,6 +5,9 @@ import Login from './components/Login';
 import Registro from './components/Registro';
 import './index.css';
 import Laptops from './components/Laptos';
+import Telefono from './components/Telefono';
+import Accesorios from './components/Accesorios';
+import Desktop from './components/Desktop';
 
 function App() {
   return (
@@ -15,6 +18,9 @@ function App() {
           <Route path='/login' element={<Login />} />
           <Route path='/registro' element={<Registro />} />
           <Route path='laptops' element={<Laptops />} />
+          <Route path='telefono' element={<Telefono />} />
+          <Route path='accesorios' element={<Accesorios />} />
+          <Route path='desktops' element={<Desktop />} />
         </Routes>
       </Router>
     </div>

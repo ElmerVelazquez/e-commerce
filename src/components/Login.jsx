@@ -1,38 +1,51 @@
-import React,{ useState } from 'react';
+import React, { useState } from 'react';
 import { AiOutlineUser, AiOutlineLock } from 'react-icons/ai';
 
 function Login() {
-    // Definición de estados para almacenar el correo, la contraseña y los mensajes de error
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    // Función que maneja el envío del formulario de inicio de sesión
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        
-        // Validar que los campos de correo y contraseña no estén vacíos
-        if (!email || !password) {
-            setError('Por favor completa todos los campos');
+
+        const loginUrl = import.meta.env.VITE_API_LOGIN_URL;
+
+        if (!loginUrl) {
+            setError('URL de login no definida');
+            console.error('VITE_API_LOGIN_URL no está definida en el archivo .env');
             return;
         }
 
-        // Simulación de una petición de inicio de sesión
-        console.log('Iniciar sesión con', { email, password });
+        try {
+            const response = await fetch(loginUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
 
-        // Limpiar el mensaje de error si la validación es exitosa
-        setError('');
+            const data = await response.json();
+
+            if (!response.ok) {
+                setError(data.message || 'Error al iniciar sesión');
+                return;
+            }
+
+            console.log('Inicio de sesión exitoso', data);
+            setError('');
+        } catch (err) {
+            console.error('Error al realizar la solicitud', err);
+            setError('Error al realizar la solicitud');
+        }
     };
 
     return (
         <>
-
-            {/* Seccion del navbar */}
-
-            {/* Sección de la parte superior o NavBar */}
-
+            {/* Sección del navbar */}
             <div className="flex bg-red-600 p-4 justify-between">
-                <h1 className="text-white text-2xl font-bold">
+                <h1 className="text-white text-2xl font-bold mt-3">
                     <a href="/">LincolnTech</a>
                 </h1>
                 <h2 className="text-white font-bold mt-6">
