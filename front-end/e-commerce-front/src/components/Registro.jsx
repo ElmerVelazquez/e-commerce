@@ -27,7 +27,7 @@ function Registro() {
 
             if (response.ok) {
                 console.log('Usuario registrado con éxito');
-                // Redirigir o mostrar un mensaje de éxito
+        
             } else {
                 const data = await response.json();
                 setError(data.message || 'Error al registrarse');
