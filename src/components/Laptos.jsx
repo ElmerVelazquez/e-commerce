@@ -5,7 +5,7 @@ import { FaShoppingCart, FaUser } from 'react-icons/fa';
 
 // Datos de las laptops
 const laptopsData = [
-    { id: 1, name: 'MacBook Air 2020', description: 'm3, 8GB Ram, 512 SSD, Cámara hd y Bluetooth', price: 'RD$ 65,000', image: '/src/assets/laptoUno.jpg' },
+    { id: 1, name: 'MacBook Air 2022', description: 'm3, 8GB Ram, 512 SSD, Cámara hd y Bluetooth', price: 'RD$ 65,000', image: '/src/assets/laptoUno.jpg' },
     { id: 2, name: 'Lenovo Laptop', description: '8GB RAM, i7, 256 SSD, Huella, cámara HD y Bluetooth', price: 'RD$ 26,000', image: '/src/assets/laptoDos.jpg' },
     { id: 3, name: 'Acer Aspire 5 Slim', description: 'Ryzen 3, 4GB RAM, 128 SSD, Cámara HD y Bluetooth', price: 'RD$ 22,000', image: '/src/assets/laptoTres.jpg' },
     { id: 4, name: 'Lenovo Laptop', description: '4GB RAM, i3, 128 SSD, Cámara HD Y Bluetooth', price: 'RD$ 16,000', image: '/src/assets/laptoCuatro.jpg' },
