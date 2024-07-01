@@ -1,22 +1,19 @@
 ﻿using E_Commerce.DTO;
 using E_Commerce.Interfaces;
 using E_Commerce.Models;
-using E_Commerce.Utilities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
-using System.Drawing;
 
 namespace E_Commerce.Controllers
 {
-
-    [Route("api/users")]
-    [ApiController]
-    public class UserController : Controller
+    
+    [Route("api/orders")]
+    [ApiController]   
+    public class OrderController : ControllerBase
     {
-        private readonly IUserRepository _repo;
-
-        public UserController(IUserRepository repo)
+        private readonly IOrderRepository _repo;
+        public OrderController(IOrderRepository repo)
         {
             _repo = repo;
         }
@@ -38,22 +35,19 @@ namespace E_Commerce.Controllers
         {
             return Ok(await _repo.get(lastpage, size));
         }
-        [AllowAnonymous]
+        [Authorize(Roles = "admin, regular")]
         [HttpPost]
-        public async Task<IActionResult> Add(UserDto userdto)
+        public async Task<IActionResult> Add(OrderDto orderdto)
         {
-            if (await _repo.EmailExist(userdto.Email)) return BadRequest("El email ya existe");
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var respon = Ok(await _repo.add(userdto));
-            await _repo.CreateShoppingCartAsync();
-            return respon;
+            return Ok(await _repo.add(orderdto));
         }
         [Authorize(Roles = "admin, regular")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(UserDto userdto, int id)
+        [HttpPut]
+        public async Task<IActionResult> Update(OrderDto orderdto, int id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            return Ok(await _repo.update(userdto, id));
+            return Ok(await _repo.update(orderdto, id));
         }
         [Authorize(Roles = "admin, regular")]
         [HttpDelete("{id}")]

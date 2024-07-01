@@ -1,46 +1,81 @@
-﻿using E_Commerce.Interfaces;
+﻿using AutoMapper;
+using E_Commerce.DTO;
+using E_Commerce.Interfaces;
 using E_Commerce.Models;
+using E_Commerce.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
 
 namespace E_Commerce.Repository
 {
-    public class UserRepository: ControllerBase, IUserRepository
+    public class UserRepository: BaseRepository<User>, IUserRepository
     {
-        public readonly EcommerceDbContext _context;
-        public UserRepository(EcommerceDbContext context)
+        private readonly IShoppingCartRepository _shoppingcart;
+        public UserRepository(EcommerceDbContext context, IMapper mapper, IShoppingCartRepository shoppingcart)
+            : base(context,mapper)
         {
-            _context = context;
+            _shoppingcart = shoppingcart;
         }
-        public async Task<List<User>> get()
+        public async Task<bool> EmailExist(string email)
         {
-            return await _context.Users.ToListAsync();
+           return await _context.Users.AnyAsync(x => x.Email.Equals(email));               
         }
-        public async Task<User> get(int id)
+        public override async Task<Result<List<User>>> get()
         {
-            return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
-
-        }
-        public async Task<List<string>> add(User user)
-        {
-            var _id = user.Id;
-            if (await _context.Users.AnyAsync(x => x.Id == _id)!)
+            var registros = await _context.Users
+                .Include(u => u.Addresses)
+                .Include(u => u.Orders)
+                      .ThenInclude(p => p.OrderDetails)
+                .Include(u => u.ShoppingCarts)
+                      .ThenInclude(p => p.CartItems)
+                .ToListAsync();
+            if (registros == null)
             {
-                return null;
+                return Result<List<User>>.Fail("registros no encontrados");
             }
-            _context.Users.Add(user);
-            return "hola";
+            return Result<List<User>>.Success(registros);
         }
-
-        public async Task<User> update(User user, int id)
+        public async Task CreateShoppingCartAsync()
         {
-            return user;
-        }
-        public async Task<User> delete(int id)
-        {
-            return await _context.Users.FirstOrDefaultAsync();
-        }
+            var userid = await _context.Users.Select(u => u.Id).MaxAsync();
+            var cart = new ShoppingCart
+            {
+                UserId = userid
+            };
+            _context.ShoppingCarts.Add(cart);
+            await _context.SaveChangesAsync();
 
+        }
+        public override async Task<Result<User>> get(int id)
+        {
+            var registro = await _context.Users
+                .Include(u => u.Addresses)
+                .Include(u => u.Orders)
+                      .ThenInclude(p => p.OrderDetails)
+                .Include(u => u.ShoppingCarts)
+                      .ThenInclude(p => p.CartItems)
+                .FirstOrDefaultAsync(x => x.Id == id);
+            if (registro == null)
+            {
+                return Result<User>.Fail("id no encontrado");
+            }
+            return Result<User>.Success(registro);
+        }
+        public override async Task<Result<List<User>>> get(int page, int size)
+        {
+            var registro = await _context.Users
+              .OrderBy(t => t.Id)
+              .Where(b => b.Id >= page)
+              .Take(size)
+              .Include(u => u.Addresses)
+              .Include(u => u.Orders)
+                     .ThenInclude(p => p.OrderDetails)
+              .Include(u => u.ShoppingCarts)
+                     .ThenInclude(p => p.CartItems)
+              .ToListAsync();
+            return Result<List<User>>.Success(registro);
+        }
     }
 }

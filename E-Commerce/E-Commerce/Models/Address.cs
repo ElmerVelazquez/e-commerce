@@ -1,9 +1,10 @@
-﻿using System;
+﻿using E_Commerce.Interfaces;
+using System;
 using System.Collections.Generic;
 
 namespace E_Commerce.Models;
 
-public partial class Address
+public partial class Address : InterfaceId
 {
     public int Id { get; set; }
 
@@ -19,5 +20,4 @@ public partial class Address
 
     public virtual User User { get; set; } = null!;
 
-    public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

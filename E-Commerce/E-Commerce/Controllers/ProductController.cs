@@ -1,61 +1,57 @@
 ﻿using E_Commerce.DTO;
 using E_Commerce.Interfaces;
 using E_Commerce.Models;
-using E_Commerce.Utilities;
+using E_Commerce.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
-using System.Drawing;
+
+// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace E_Commerce.Controllers
 {
-
-    [Route("api/users")]
+ 
+    [Route("api/products")]
     [ApiController]
-    public class UserController : Controller
+    public class ProductController : ControllerBase
     {
-        private readonly IUserRepository _repo;
-
-        public UserController(IUserRepository repo)
+        private readonly IBaseRepository<Product> _repo;
+        public ProductController(IBaseRepository<Product> product)
         {
-            _repo = repo;
+            _repo = product;
         }
-        [Authorize(Roles = "admin")]
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             return Ok(await _repo.get());
         }
-        [Authorize(Roles = "admin, regular")]
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             return Ok(await _repo.get(id));
         }
-        [Authorize(Roles = "admin")]
+        [AllowAnonymous]
         [HttpGet("{lastpage}&{size}")]
         public async Task<IActionResult> Get(int lastpage, int size)
         {
             return Ok(await _repo.get(lastpage, size));
         }
-        [AllowAnonymous]
+        [Authorize(Roles = "admin")]
         [HttpPost]
-        public async Task<IActionResult> Add(UserDto userdto)
+        public async Task<IActionResult> Add(ProductDto productdto)
         {
-            if (await _repo.EmailExist(userdto.Email)) return BadRequest("El email ya existe");
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var respon = Ok(await _repo.add(userdto));
-            await _repo.CreateShoppingCartAsync();
-            return respon;
+            return Ok(await _repo.add(productdto));
         }
-        [Authorize(Roles = "admin, regular")]
+        [Authorize(Roles = "admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(UserDto userdto, int id)
+        public async Task<IActionResult> Update(ProductDto productdto, int id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            return Ok(await _repo.update(userdto, id));
+            return Ok(await _repo.update(productdto, id));
         }
-        [Authorize(Roles = "admin, regular")]
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
