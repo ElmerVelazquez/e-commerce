@@ -20,7 +20,7 @@ function App() {
           <Route path='laptops' element={<Laptops />} />
           <Route path='telefono' element={<Telefono />} />
           <Route path='accesorios' element={<Accesorios />} />
-          <Route path='desktops' element={<Desktop />} />
+          <Route path='desktop' element={<Desktop />} />
         </Routes>
       </Router>
     </div>

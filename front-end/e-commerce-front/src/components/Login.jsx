@@ -44,11 +44,11 @@ function Login() {
     return (
         <>
             {/* Sección del navbar */}
-            <div className="flex bg-red-600 p-4 justify-between">
+            <div className="flex bg-red-600 pt-6 pl-6 justify-between">
                 <h1 className="text-white text-2xl font-bold mt-3">
                     <a href="/">LincolnTech</a>
                 </h1>
-                <h2 className="text-white font-bold mt-6">
+                <h2 className="text-white font-bold mt-6 pr-6">
                     <a href="/registro">Registrarse</a>
                 </h2>
             </div>
