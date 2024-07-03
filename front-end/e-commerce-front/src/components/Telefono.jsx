@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { FaShoppingCart, FaUser } from 'react-icons/fa';
 import Buscador from './Buscador';
@@ -20,18 +20,48 @@ const telefonoData = [
 ];
 
 // Componente de la barra de navegación
-const Navbar = ({ onSearch }) => (
-    <div className="flex bg-red-600 p-8 justify-between items-center">
-        <h1 className="text-white text-2xl font-bold">
-            <a href="/">LincolnTech</a>
-        </h1>
-        <Buscador onSearch={onSearch} />
-        <div className="flex items-center space-x-10">
-            <FaShoppingCart className="text-white text-2xl" />
-            <FaUser className="text-white text-2xl" />
+const Navbar = ({ onSearch }) => {
+    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+    const userMenuRef = useRef(null);
+
+    // Función para abrir/cerrar el menú de usuario
+    const toggleUserMenu = () => {
+        setIsUserMenuOpen(!isUserMenuOpen);
+    };
+
+    // Cerrar el menú de usuario si se hace clic fuera de él
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+                setIsUserMenuOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    return (
+        <div className="flex bg-red-600 p-8 justify-between items-center">
+            <h1 className="text-white text-2xl font-bold">
+                <a href="/">LincolnTech</a>
+            </h1>
+            <Buscador onSearch={onSearch} />
+            <div className="flex items-center space-x-10 relative">
+                <FaShoppingCart className="text-white text-2xl" />
+                <FaUser className="text-white text-2xl cursor-pointer" onClick={toggleUserMenu} />
+                {isUserMenuOpen && (
+                    <div ref={userMenuRef} className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg">
+                        <a href="/login" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Iniciar Sesión</a>
+                        <a href="/registro" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Registrarse</a>
+                    </div>
+                )}
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 Navbar.propTypes = {
     onSearch: PropTypes.func.isRequired,

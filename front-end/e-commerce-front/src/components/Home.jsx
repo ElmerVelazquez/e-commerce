@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Buscador from './Buscador';
-import { FaShoppingCart, FaUser, FaInstagram, FaFacebookF, FaLinkedinIn } from 'react-icons/fa';
+import { FaShoppingCart, FaUser } from 'react-icons/fa';
 
 // Importación de imágenes
 import frontUno from '../assets/frontUno.png';
@@ -27,6 +27,8 @@ import frontDeskCuatro from '../assets/frontDeskCuatro.jpg';
 function Home() {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const userMenuRef = useRef(null);
 
   const productos = [
     { id: 1, name: 'Telefono 1', image: frontUno, category: 'telefono' },
@@ -61,6 +63,25 @@ function Home() {
     console.log('Buscando:', query, 'Resultados:', results);
   };
 
+  // Función para abrir/cerrar el menú de usuario
+  const toggleUserMenu = () => {
+    setIsUserMenuOpen(!isUserMenuOpen);
+  };
+
+  // Cerrar el menú de usuario si se hace clic fuera de él
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setIsUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <>
       {/* Sección del navbar */}
@@ -71,9 +92,15 @@ function Home() {
         {/* Componente del buscador */}
         <Buscador onSearch={handleSearch} />
         {/* Iconos de carrito de compras y usuario */}
-        <div className="flex items-center space-x-10">
-          <FaShoppingCart className="text-white text-2xl" />
-          <FaUser className="text-white text-2xl" />
+        <div className="flex items-center space-x-10 relative">
+          <FaShoppingCart className="text-white text-2xl cursor-pointer" />
+          <FaUser className="text-white text-2xl cursor-pointer" onClick={toggleUserMenu} />
+          {isUserMenuOpen && (
+            <div ref={userMenuRef} className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg">
+              <a href="/login" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Iniciar Sesión</a>
+              <a href="/registro" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Registrarse</a>
+            </div>
+          )}
         </div>
       </div>
 
@@ -108,13 +135,13 @@ function Home() {
           </section>
 
           {/* Sección de Laptops */}
-          <section className="">
+          <section>
             <h2 className="mt-5 ml-5 font-bold hover:text-red-600">
               <a href="/laptops">Ver Laptops</a>
             </h2>
             <div className="grid grid-cols-4 justify-center mx-auto mt-10 w-3/4">
               {productos.filter(producto => producto.category === 'laptop').map((producto) => (
-                <a key={producto.id} href="">
+                <a key={producto.id} href={`/laptops/${producto.id}`}>
                   <img src={producto.image} alt={producto.name} className="" />
                 </a>
               ))}
@@ -128,7 +155,7 @@ function Home() {
             </h2>
             <div className="grid grid-cols-4 justify-center mx-auto mt-10 w-3/4">
               {productos.filter(producto => producto.category === 'telefono').slice(4).map((producto) => (
-                <a key={producto.id} href="">
+                <a key={producto.id} href={`/telefonos/${producto.id}`}>
                   <img src={producto.image} alt={producto.name} className="" />
                 </a>
               ))}
@@ -142,21 +169,21 @@ function Home() {
             </h2>
             <div className="grid grid-cols-4 gap-5 justify-center mx-auto mt-10 w-3/4">
               {productos.filter(producto => producto.category === 'accesorio').map((producto) => (
-                <a key={producto.id} href="">
+                <a key={producto.id} href={`/accesorios/${producto.id}`}>
                   <img src={producto.image} alt={producto.name} className="" />
                 </a>
               ))}
             </div>
           </section>
 
-          {/* Sección de Desktop */}
+          {/* Sección de Computadoras de escritorio */}
           <section>
             <h2 className='mt-5 ml-5 font-bold hover:text-red-600'>
-              <a href="/desktops">Ver Desktops</a>
+              <a href="/desktop">Ver Desktops</a>
             </h2>
             <div className="grid grid-cols-4 gap-5 justify-center mx-auto mt-10 w-3/4">
               {productos.filter(producto => producto.category === 'desktop').map((producto) => (
-                <a key={producto.id} href="">
+                <a key={producto.id} href={`/desktop/${producto.id}`}>
                   <img src={producto.image} alt={producto.name} className="" />
                 </a>
               ))}
@@ -164,21 +191,6 @@ function Home() {
           </section>
         </>
       )}
-
-      {/* Footer */}
-      <footer className='bg-red-600 p-7'>
-        <div className='flex justify-end space-x-6 mr-6'>
-          <a href="/" target="_blank" rel="noopener noreferrer">
-            <FaInstagram className='text-white text-2xl' />
-          </a>
-          <a href="/" target="_blank" rel="noopener noreferrer">
-            <FaFacebookF className='text-white text-2xl' />
-          </a>
-          <a href="/" target="_blank" rel="noopener noreferrer">
-            <FaLinkedinIn className='text-white text-2xl' />
-          </a>
-        </div>
-      </footer>
     </>
   );
 }

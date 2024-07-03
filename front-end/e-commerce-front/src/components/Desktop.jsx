@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Buscador from './Buscador';
 import { FaShoppingCart, FaUser } from 'react-icons/fa';
@@ -20,38 +20,68 @@ const desktopData = [
 ];
 
 // Componente de la barra de navegación
-const Navbar = ({ onSearch }) => (
-    <div className="flex bg-red-600 p-6 justify-between items-center">
-        <h1 className="text-white text-2xl font-bold">
-            <a href="/">LincolnTech</a>
-        </h1>
-        <Buscador onSearch={onSearch} />
-        <div className="flex items-center space-x-10">
-            <FaShoppingCart className="text-white text-2xl" />
-            <FaUser className="text-white text-2xl" />
+const Navbar = ({ onSearch }) => {
+    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+    const userMenuRef = useRef(null);
+
+    // Función para abrir/cerrar el menú de usuario
+    const toggleUserMenu = () => {
+        setIsUserMenuOpen(!isUserMenuOpen);
+    };
+
+    // Cerrar el menú de usuario si se hace clic fuera de él
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+                setIsUserMenuOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    return (
+        <div className="flex bg-red-600 p-6 justify-between items-center">
+            <h1 className="text-white text-2xl font-bold">
+                <a href="/">LincolnTech</a>
+            </h1>
+            <Buscador onSearch={onSearch} />
+            <div className="flex items-center space-x-10 relative">
+                <FaShoppingCart className="text-white text-2xl" />
+                <FaUser className="text-white text-2xl cursor-pointer" onClick={toggleUserMenu} />
+                {isUserMenuOpen && (
+                    <div ref={userMenuRef} className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg">
+                        <a href="/login" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Iniciar Sesión</a>
+                        <a href="/registro" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Registrarse</a>
+                    </div>
+                )}
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 Navbar.propTypes = {
     onSearch: PropTypes.func.isRequired,
 };
 
-// Componente para representar una tarjeta
+// Componente para representar una tarjeta de los Desktops
 const DesktopCard = ({ desktop }) => (
     <a href={`/desktops/${desktop.id}`} className="relative border rounded-lg p-4 shadow-md block hover:shadow-lg transition-shadow duration-200">
         <div className="w-full h-32 mb-4 flex items-center justify-center">
-            {/* Imagen del accesorio */}
+            {/* Imagen del desktop */}
             <img src={desktop.image} alt={desktop.name} className="max-h-full max-w-full object-contain" />
         </div>
         {/* Nombre del Desktop */}
         <h3 className="text-lg font-semibold">{desktop.name}</h3>
-        {/* Descripción del accesorio */}
+        {/* Descripción del Desktop */}
         <p className="text-sm">{desktop.description}</p>
-        {/* Precio del accesorio */}
+        {/* Precio del Desktop */}
         <p className="text-md font-bold mt-2">{desktop.price}</p>
         <FaShoppingCart className="absolute bottom-4 right-4 text-black text-3xl" />
-    </a> 
+    </a>
 );
 
 DesktopCard.propTypes = {
@@ -64,12 +94,12 @@ DesktopCard.propTypes = {
     }).isRequired,
 };
 
-// Componente principal que maneja el estado y renderiza los accesorios
+// Componente principal que maneja el estado y renderiza los desktops
 function Desktop() {
     // Estado para almacenar los resultados de la búsqueda
     const [searchResults, setSearchResults] = useState(desktopData);
 
-    // Función para manejar la búsqueda de accesorios
+    // Función para manejar la búsqueda de desktops
     const handleSearch = (searchTerm) => {
         const results = desktopData.filter(desktop =>
             desktop.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
