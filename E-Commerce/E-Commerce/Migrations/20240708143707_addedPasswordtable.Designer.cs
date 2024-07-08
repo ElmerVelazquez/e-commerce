@@ -4,6 +4,7 @@ using E_Commerce.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E_Commerce.Migrations
 {
     [DbContext(typeof(EcommerceDbContext))]
-    partial class EcommerceDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240708143707_addedPasswordtable")]
+    partial class addedPasswordtable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -341,7 +344,7 @@ namespace E_Commerce.Migrations
                     b.HasIndex(new[] { "Email" }, "UQ__Users__AB6E616485D4CFEF")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("E_Commerce.Models.Address", b =>
@@ -464,7 +467,8 @@ namespace E_Commerce.Migrations
 
                     b.Navigation("Orders");
 
-                    b.Navigation("Password");
+                    b.Navigation("Password")
+                        .IsRequired();
 
                     b.Navigation("ShoppingCarts");
                 });

@@ -15,6 +15,7 @@ using Azure.Identity;
 using Microsoft.Extensions.Hosting;
 using static System.Net.Mime.MediaTypeNames;
 using System.Runtime.CompilerServices;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -92,13 +93,24 @@ var mapperConfig = new MapperConfiguration(config =>
 IMapper mapper = mapperConfig.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowOrigin",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
+
+var connection_string = builder.Configuration.GetConnectionString("Default"); 
 builder.Services.AddDbContext<EcommerceDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Default"))
+    
+    options.UseSqlServer(connection_string)
 );
+
 //AddScoped
 builder.Services.AddRepositories();
 
@@ -142,6 +154,8 @@ if (app.Environment.IsDevelopment())
 app.UseSwagger();//
 app.UseSwaggerUI();//
 app.UseHttpsRedirection();
+
+app.UseCors("AllowOrigin");
 
 app.UseAuthentication();
 app.UseAuthorization();

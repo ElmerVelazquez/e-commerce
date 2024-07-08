@@ -9,7 +9,6 @@ namespace E_Commerce.Models;
 
 public partial class User: InterfaceId
 {
-    [BindNever]
     public int Id { get; set; }
 
     [Required(ErrorMessage = "El nombre es obligatorio")]
@@ -19,14 +18,12 @@ public partial class User: InterfaceId
     public string Email { get; set; } = null!;
 
     [Required(ErrorMessage = "La contraseña es obligatoria")]
-    public string Password { get; set; } = null!;
 
     public string? Phone { get; set; }
 
     public string Rol { get; set; } = "regular";
-
     public DateTime? RegistrationDate { get; set; }
-
+    public virtual Password? Password { get; set; }
     public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();

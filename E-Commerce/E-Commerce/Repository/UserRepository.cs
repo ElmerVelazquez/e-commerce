@@ -77,5 +77,29 @@ namespace E_Commerce.Repository
               .ToListAsync();
             return Result<List<User>>.Success(registro);
         }
+        public async Task<Result<UserDto>> adduser(UserDto dto) 
+        {
+            var userregis = _mapper.Map<User>(dto);
+            _context.Users.Add(userregis);
+            await _context.SaveChangesAsync();
+            var id = await _context.Users.Select(p => p.Id).MaxAsync();
+            Password passwordregis = new Password
+            {
+                UserId = id,
+                PasswordHash = PasswordHasher.HashPassword(dto.Password)
+            };
+            _context.Passwords.Add(passwordregis);
+            await _context.SaveChangesAsync();
+            return Result<UserDto>.Success(dto);
+        }
+        public async Task<Result> UpdatePassword(int id, string newpassword)
+        {
+            var regis = await _context.Passwords.Where(u => u.UserId == id).FirstOrDefaultAsync();
+            if(regis == null) return Result.Fail("usuario no encontrado");
+            var userhashedpassword = PasswordHasher.HashPassword(newpassword);
+            regis.PasswordHash = userhashedpassword;
+            await _context.SaveChangesAsync();
+            return Result.Success();
+        }
     }
 }

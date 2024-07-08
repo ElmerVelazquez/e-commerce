@@ -30,6 +30,7 @@ public partial class EcommerceDbContext : DbContext
     public virtual DbSet<ShoppingCart> ShoppingCarts { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+    public virtual DbSet<Password> Passwords { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -192,6 +193,9 @@ public partial class EcommerceDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
+
+            entity.ToTable("Users");
+
             entity.HasKey(e => e.Id).HasName("PK__Users__3213E83F790F4474");
 
             entity.HasIndex(e => e.Email, "UQ__Users__AB6E616485D4CFEF").IsUnique();
@@ -203,9 +207,6 @@ public partial class EcommerceDbContext : DbContext
             entity.Property(e => e.Name)
                 .HasMaxLength(100)
                 .HasColumnName("name");
-            entity.Property(e => e.Password)
-                .HasMaxLength(255)
-                .HasColumnName("password");
             entity.Property(e => e.Phone)
                 .HasMaxLength(20)
                 .HasColumnName("phone");
@@ -217,6 +218,18 @@ public partial class EcommerceDbContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("registration_date");
 
+            entity.HasOne(e => e.Password).WithOne(e => e.User)
+            .HasForeignKey<Password>(p => p.UserId);
+
+        });
+        modelBuilder.Entity<Password>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.ToTable("Passwords");
+            entity.Property(e => e.PasswordHash)
+            .HasMaxLength(100);
+            entity.Property(e => e.Id)
+            .ValueGeneratedOnAdd();
         });
 
         OnModelCreatingPartial(modelBuilder);

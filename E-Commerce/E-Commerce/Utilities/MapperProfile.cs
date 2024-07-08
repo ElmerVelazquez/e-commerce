@@ -9,7 +9,7 @@ namespace E_Commerce.Utilities
         public MapperProfile()
         {
             //entrada de datos
-            CreateMap<UserDto, User>();
+            CreateMap<UserDto, User>().ForMember(dest => dest.Password, opt => opt.Ignore());
             CreateMap<AddressDto, Address>();
             CreateMap<ProductDto, Product>();
             CreateMap<CategoryDto, Category>();

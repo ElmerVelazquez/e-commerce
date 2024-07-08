@@ -1,5 +1,8 @@
-﻿using E_Commerce.Models;
+﻿using E_Commerce.DTO;
+using E_Commerce.Models;
+using E_Commerce.Utilities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -10,6 +13,7 @@ using System.Text;
 
 namespace E_Commerce.Controllers
 {
+    [EnableCors("AllowOrigin")]
     [Route("api/auth")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -27,7 +31,8 @@ namespace E_Commerce.Controllers
         {
             var regis = await _context.Users.Where(x => user.Email.Equals(x.Email)).FirstAsync();
             if (regis == null) return NotFound("usuario no encontrado");
-            if (!regis.Email.Equals(user.Email) && !regis.Password.Equals(user.Password)) return Unauthorized("Credenciales invalidas");      
+            var regispass = await _context.Passwords.Where(x => regis.Id == x.UserId).FirstAsync();
+            if (!PasswordHasher.VerifyPassword(regispass.PasswordHash, user.Password)) return Unauthorized("Credenciales invalidas");      
 
             var tokenhandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration["jwtSettings:Key"]);
@@ -50,12 +55,12 @@ namespace E_Commerce.Controllers
 
             return Ok(new {id=regis.Id, rol= regis.Rol, Token = tokenString });
         }
+
         public class UserLogin
         {
             public required string Email { get; set; }
             public required string Password { get; set; }
             
         }
-      
     }
 }
