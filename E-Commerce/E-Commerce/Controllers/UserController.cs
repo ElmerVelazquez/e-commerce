@@ -3,13 +3,14 @@ using E_Commerce.Interfaces;
 using E_Commerce.Models;
 using E_Commerce.Utilities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Drawing;
 
 namespace E_Commerce.Controllers
 {
-
+    [EnableCors("AllowOrigin")]
     [Route("api/users")]
     [ApiController]
     public class UserController : Controller
@@ -44,7 +45,7 @@ namespace E_Commerce.Controllers
         {
             if (await _repo.EmailExist(userdto.Email)) return BadRequest("El email ya existe");
             if (!ModelState.IsValid) return BadRequest(ModelState);
-            var respon = Ok(await _repo.add(userdto));
+            var respon = Ok(await _repo.adduser(userdto));
             await _repo.CreateShoppingCartAsync();
             return respon;
         }
@@ -61,5 +62,16 @@ namespace E_Commerce.Controllers
         {
             return Ok(await _repo.delete(id));
         }
+
+        [Authorize(Roles = "admin, regular")]
+        [HttpPut("password/{id}")]
+        public async Task<IActionResult> UpdatePassword(int id, string newpassword)
+        {
+            if (newpassword == null) return BadRequest();
+            await _repo.UpdatePassword(id, newpassword);
+            return Ok();
+        }
+
+
     }
 }

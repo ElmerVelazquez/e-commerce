@@ -9,9 +9,8 @@ namespace E_Commerce.Repository
     public class BaseRepository<Entity> : IBaseRepository<Entity> where Entity : class, InterfaceId
     {
         protected readonly EcommerceDbContext _context;
-        private readonly IMapper _mapper;
+        protected readonly IMapper _mapper;
         private readonly DbSet<Entity> _dbSet;
-        int Id { get; set; }
 
         public BaseRepository(EcommerceDbContext context, IMapper mapper)
         {
@@ -47,7 +46,7 @@ namespace E_Commerce.Repository
               .ToListAsync();
             return Result<List<Entity>>.Success(registro);
         }
-        public async Task<Result<Dto>> add<Dto>(Dto dto) where Dto : class 
+        public virtual async Task<Result<Dto>> add<Dto>(Dto dto) where Dto : class 
         {
             Entity registro = _mapper.Map<Entity>(dto);
             _dbSet.Add(registro);

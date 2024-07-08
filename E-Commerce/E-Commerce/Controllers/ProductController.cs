@@ -3,13 +3,14 @@ using E_Commerce.Interfaces;
 using E_Commerce.Models;
 using E_Commerce.Repository;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace E_Commerce.Controllers
 {
- 
+    [EnableCors("AllowOrigin")]
     [Route("api/products")]
     [ApiController]
     public class ProductController : ControllerBase

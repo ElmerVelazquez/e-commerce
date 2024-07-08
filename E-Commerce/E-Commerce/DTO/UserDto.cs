@@ -8,7 +8,7 @@ namespace E_Commerce.DTO
 
         public string Email { get; set; } = null!;
 
-        public string Password { get; set; } = null!;
+        public string? Password { get; set; }
 
         public string? Phone { get; set; }
 
