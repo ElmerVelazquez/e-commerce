@@ -20,7 +20,7 @@ const accesoriosData = [
     {id: 13, name: 'Mouse TECKNET', description:'Mouse Bluetooth, también con conexión USB', price:'RD$ 850', image:'/src/assets/accesorioTrece.jpg'},
     {id: 14, name: 'Teclado y Mouse Lenovo', description:'Teclado y Mouse de cables', price:'RD$ 1, 350', image:'/src/assets/accesorioCatorce.jpg'},
     {id: 15, name: 'Auriculares Apple', description:'Auriculares con cables para Iphone', price:'RD$ 1, 050', image:'src/assets/accesorioQuince.jpg'},
-    {id: 16, name: 'Auriculaes Philips', description: 'Auriculares con microfono, ligeros y buen audio', price: 'RD$ 1, 350', image:'/src/assets/accesorioDiesCi.jpg' },
+    {id: 16, name: 'Auriculares Philips', description: 'Auriculares con microfono, ligeros y buen audio', price: 'RD$ 1, 350', image:'/src/assets/accesorioDiesCi.jpg' },
 ];
 
 // Componente de la barra de navegación
