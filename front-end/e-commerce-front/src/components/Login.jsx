@@ -69,7 +69,7 @@ function Login() {
                 <h1 className="text-white text-2xl font-bold mt-3">
                     <a href="/">LincolnTech</a>
                 </h1>
-                <h2 className="text-white font-bold mt-6 pr-6">
+                <h2 className="text-white font-bold mt-6 mb-3 pr-6">
                     <a href="/registro">Registrarse</a>
                 </h2>
             </div>

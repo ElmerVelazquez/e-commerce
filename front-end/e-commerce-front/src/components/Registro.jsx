@@ -70,11 +70,11 @@ function Registro() {
     return (
         <>
             {/* Sección de la parte superior o NavBar */}
-            <div className="flex bg-red-600 pt-6 pl-6 justify-between">
+            <div className="flex bg-red-600 pt-6  mb-3 pl-6 justify-between">
                 <h1 className="text-white text-2xl font-bold">
                     <a href="/">LincolnTech</a>
                 </h1>
-                <h2 className="text-white font-bold mt-6 pr-6  ">
+                <h2 className="text-white font-bold mt-6 mb-3 pr-6  ">
                     <a href="/login">Iniciar Sesión</a>
                 </h2>
             </div>
