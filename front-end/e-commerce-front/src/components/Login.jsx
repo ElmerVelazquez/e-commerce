@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 import { AiOutlineUser, AiOutlineLock } from 'react-icons/ai';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
+const MySwal = withReactContent(Swal);
+
 
 function Login() {
     const [email, setEmail] = useState('');
@@ -29,15 +34,31 @@ function Login() {
             const data = await response.json();
 
             if (!response.ok) {
-                setError(data.message || 'Error al iniciar sesión');
+                MySwal.fire({
+                    title: 'Error',
+                    text: data.message || 'Error al iniciar sesion',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
                 return;
             }
 
-            console.log('Inicio de sesión exitoso', data);
+            console.log('Inicio de sesión exitoso', );
+            MySwal.fire({
+                title: 'Éxito',
+                text: 'Inicio de sesión exitoso ',
+                icon: 'success',
+                confirmButtonText: 'OK'
+              });
             setError('');
         } catch (err) {
-            console.error('Error al realizar la solicitud', err);
             setError('Error al realizar la solicitud');
+            MySwal.fire({
+                title: 'Error',
+                text: 'Error al realizar la solicitud' + err,
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
         }
     };
 
