@@ -17,7 +17,7 @@ function Registro() {
         }
 
         try {
-            const response = await fetch('http://localhost:5000/registro', {
+            const response = await fetch(import.meta.env.VITE_API_USER_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -36,6 +36,7 @@ function Registro() {
             console.error('Error al registrarse', error);
             setError('Error al registrarse');
         }
+
     };
 
     return (

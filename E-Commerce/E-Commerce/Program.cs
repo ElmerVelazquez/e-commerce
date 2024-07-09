@@ -105,7 +105,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
 
-var connection_string = builder.Configuration.GetConnectionString("Default"); 
+var connection_string = builder.Configuration.GetConnectionString("somee"); 
 builder.Services.AddDbContext<EcommerceDbContext>(options =>
     
     options.UseSqlServer(connection_string)
