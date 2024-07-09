@@ -43,7 +43,7 @@ namespace E_Commerce.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(UserDto userdto)
         {
-            if (await _repo.EmailExist(userdto.Email)) return BadRequest("El email ya existe");
+            if (await _repo.EmailExist(userdto.Email)) return BadRequest(Result.Fail("El email ya existe"));
             if (!ModelState.IsValid) return BadRequest(ModelState);
             var respon = Ok(await _repo.adduser(userdto));
             await _repo.CreateShoppingCartAsync();
