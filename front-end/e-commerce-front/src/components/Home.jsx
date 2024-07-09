@@ -137,7 +137,7 @@ function Home() {
           {/* Sección de Laptops */}
           <section>
             <h2 className="mt-5 ml-5 font-bold hover:text-red-600">
-              <a href="/laptops">Ver Laptops</a>
+              <a href="/laptos">Ver Laptops</a>
             </h2>
             <div className="grid grid-cols-4 justify-center mx-auto mt-10 w-3/4">
               {productos.filter(producto => producto.category === 'laptop').map((producto) => (
