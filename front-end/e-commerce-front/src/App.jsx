@@ -23,6 +23,7 @@ function App() {
           <Route path='/accesorios' element={<Accesorios />} />
           <Route path='/desktop' element={<Desktop />} />
           <Route path='/cart' element={<CartPage />} /> 
+          {/* <Route path='/' element={<Login />} />  */}
         </Routes>
       </Router>
     </div>

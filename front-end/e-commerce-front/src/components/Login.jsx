@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { AiOutlineUser, AiOutlineLock } from 'react-icons/ai';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-
+import { useNavigate } from 'react-router-dom';
 const MySwal = withReactContent(Swal);
 
 
@@ -10,6 +10,7 @@ function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -49,7 +50,9 @@ function Login() {
                 text: 'Inicio de sesión exitoso ',
                 icon: 'success',
                 confirmButtonText: 'OK'
-              });
+              }).then(() => {
+                navigate('/'); 
+            });
             setError('');
         } catch (err) {
             setError('Error al realizar la solicitud');
