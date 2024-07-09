@@ -8,7 +8,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
     <EncryptedPassword>
     </EncryptedPassword>
     <_PublishTargetUrl>ftp://ecommercebackendapi.somee.com/www.ecommercebackendapi.somee.com</_PublishTargetUrl>
-    <History>True|2024-07-04T03:43:17.1995236Z;False|2024-07-03T23:35:44.0165281-04:00;True|2024-07-03T23:32:21.7339479-04:00;False|2024-07-03T23:29:04.5321887-04:00;False|2024-07-03T23:27:06.5566361-04:00;False|2024-07-03T23:24:50.6755242-04:00;True|2024-07-03T23:22:39.4677351-04:00;False|2024-07-03T23:20:05.2993124-04:00;False|2024-07-03T23:14:55.7345592-04:00;False|2024-07-03T23:14:06.7290761-04:00;False|2024-07-03T23:11:58.0789642-04:00;False|2024-07-03T23:11:32.8192925-04:00;False|2024-07-03T23:09:56.5377666-04:00;False|2024-07-03T23:09:20.8121019-04:00;False|2024-07-03T23:09:04.0355745-04:00;False|2024-07-03T23:07:33.2166294-04:00;False|2024-07-03T23:06:59.2460982-04:00;</History>
+    <History>True|2024-07-08T23:17:28.1963134Z;False|2024-07-08T16:42:32.6014109-04:00;False|2024-07-08T16:41:42.8711575-04:00;False|2024-07-08T16:30:31.9667577-04:00;False|2024-07-08T16:27:49.6191492-04:00;False|2024-07-08T16:25:27.7438442-04:00;True|2024-07-03T23:43:17.1995236-04:00;False|2024-07-03T23:35:44.0165281-04:00;True|2024-07-03T23:32:21.7339479-04:00;False|2024-07-03T23:29:04.5321887-04:00;False|2024-07-03T23:27:06.5566361-04:00;False|2024-07-03T23:24:50.6755242-04:00;True|2024-07-03T23:22:39.4677351-04:00;False|2024-07-03T23:20:05.2993124-04:00;False|2024-07-03T23:14:55.7345592-04:00;False|2024-07-03T23:14:06.7290761-04:00;False|2024-07-03T23:11:58.0789642-04:00;False|2024-07-03T23:11:32.8192925-04:00;False|2024-07-03T23:09:56.5377666-04:00;False|2024-07-03T23:09:20.8121019-04:00;False|2024-07-03T23:09:04.0355745-04:00;False|2024-07-03T23:07:33.2166294-04:00;False|2024-07-03T23:06:59.2460982-04:00;</History>
     <LastFailureDetails />
   </PropertyGroup>
   <ItemGroup>
@@ -16,7 +16,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>06/12/2024 16:37:40</publishTime>
     </File>
     <File Include="appsettings.json">
-      <publishTime>03/07/2024 23:33:43</publishTime>
+      <publishTime>07/08/2024 16:23:09</publishTime>
     </File>
     <File Include="AutoMapper.dll">
       <publishTime>02/07/2024 17:45:30</publishTime>
@@ -34,19 +34,19 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>06/15/2021 19:53:50</publishTime>
     </File>
     <File Include="E-Commerce.deps.json">
-      <publishTime>07/03/2024 23:41:42</publishTime>
+      <publishTime>07/08/2024 19:15:31</publishTime>
     </File>
     <File Include="E-Commerce.dll">
-      <publishTime>07/03/2024 23:41:25</publishTime>
+      <publishTime>07/08/2024 19:15:20</publishTime>
     </File>
     <File Include="E-Commerce.exe">
-      <publishTime>07/03/2024 23:41:25</publishTime>
+      <publishTime>07/08/2024 19:15:20</publishTime>
     </File>
     <File Include="E-Commerce.pdb">
-      <publishTime>07/03/2024 23:41:25</publishTime>
+      <publishTime>07/08/2024 19:15:20</publishTime>
     </File>
     <File Include="E-Commerce.runtimeconfig.json">
-      <publishTime>03/07/2024 09:24:16</publishTime>
+      <publishTime>07/08/2024 16:24:20</publishTime>
     </File>
     <File Include="Microsoft.AspNetCore.Authentication.JwtBearer.dll">
       <publishTime>05/20/2024 00:26:12</publishTime>
@@ -214,7 +214,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
       <publishTime>10/22/2021 19:49:44</publishTime>
     </File>
     <File Include="web.config">
-      <publishTime>07/03/2024 23:41:43</publishTime>
+      <publishTime>07/08/2024 19:15:32</publishTime>
     </File>
   </ItemGroup>
 </Project>
