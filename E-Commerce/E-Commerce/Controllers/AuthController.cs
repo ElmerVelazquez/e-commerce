@@ -30,9 +30,9 @@ namespace E_Commerce.Controllers
         public async Task<IActionResult> Login(UserLogin user)
         {
             var regis = await _context.Users.Where(x => user.Email.Equals(x.Email)).FirstAsync();
-            if (regis == null) return NotFound("usuario no encontrado");
+            if (regis == null) return NotFound(Result.Fail("usuario no encontrado"));
             var regispass = await _context.Passwords.Where(x => regis.Id == x.UserId).FirstAsync();
-            if (!PasswordHasher.VerifyPassword(regispass.PasswordHash, user.Password)) return Unauthorized("Credenciales invalidas");      
+            if (!PasswordHasher.VerifyPassword(regispass.PasswordHash, user.Password)) return Unauthorized(Result.Fail("Credenciales invalidas"));      
 
             var tokenhandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration["jwtSettings:Key"]);

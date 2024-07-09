@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
+const MySwal = withReactContent(Swal);
 
 function Registro() {
     const [name, setName] = useState('');
@@ -12,7 +16,13 @@ function Registro() {
         event.preventDefault();
         
         if (password !== confirmPassword) {
-            setError('Las contraseñas no coinciden');
+            //setError('Las contraseñas no coinciden');
+            MySwal.fire({
+                title: 'Error',
+                text: 'Las Contraseñas no coinciden',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
             return;
         }
 
@@ -26,15 +36,33 @@ function Registro() {
             });
 
             if (response.ok) {
-                console.log('Usuario registrado con éxito');
+                setError('');
+                MySwal.fire({
+                    title: 'Éxito',
+                    text: 'Usuario registrado con éxito',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                  });
         
             } else {
                 const data = await response.json();
                 setError(data.message || 'Error al registrarse');
+                MySwal.fire({
+                    title: 'Error',
+                    text: data.message || 'Error al registrarse',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
             }
         } catch (error) {
             console.error('Error al registrarse', error);
             setError('Error al registrarse');
+            MySwal.fire({
+                title: 'Error',
+                text: ('Error al registrarse', error),
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
         }
 
     };
