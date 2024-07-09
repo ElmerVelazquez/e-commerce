@@ -143,6 +143,7 @@ function Home() {
               {productos.filter(producto => producto.category === 'laptop').map((producto) => (
                 <a key={producto.id} href={`/laptops/${producto.id}`}>
                   <img src={producto.image} alt={producto.name} className="" />
+
                 </a>
               ))}
             </div>
