@@ -9,6 +9,7 @@ import Telefono from './components/Telefono';
 import Accesorios from './components/Accesorios';
 import Desktop from './components/Desktop';
 import CartPage from './components/CartPage'; 
+import AdminPage from './components/AdminPage';
 
 function App() {
   return (
@@ -23,7 +24,6 @@ function App() {
           <Route path='/accesorios' element={<Accesorios />} />
           <Route path='/desktop' element={<Desktop />} />
           <Route path='/cart' element={<CartPage />} /> 
-          {/* <Route path='/' element={<Login />} />  */}
         </Routes>
       </Router>
     </div>
