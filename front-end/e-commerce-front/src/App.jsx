@@ -24,7 +24,6 @@ function App() {
           <Route path='/accesorios' element={<Accesorios />} />
           <Route path='/desktop' element={<Desktop />} />
           <Route path='/cart' element={<CartPage />} /> 
-          <Route path='/adminpage' element={<AdminPage />} />
         </Routes>
       </Router>
     </div>
