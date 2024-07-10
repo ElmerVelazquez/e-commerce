@@ -6,6 +6,7 @@ const AdminPage = () => {
     <div>
       <h1>Panel de Administración</h1>
       <p>Solo los administradores pueden ver esta página.</p>
+      
     </div>
   );
 };

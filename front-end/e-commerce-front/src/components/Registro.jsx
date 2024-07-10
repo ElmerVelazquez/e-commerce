@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useNavigate } from 'react-router-dom';
@@ -11,6 +12,8 @@ function Registro() {
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
@@ -18,10 +21,9 @@ function Registro() {
         event.preventDefault();
         
         if (password !== confirmPassword) {
-            //setError('Las contraseñas no coinciden');
             MySwal.fire({
                 title: 'Error',
-                text: 'Las Contraseñas no coinciden',
+                text: 'Las contraseñas no coinciden',
                 icon: 'error',
                 confirmButtonText: 'OK'
             });
@@ -44,7 +46,7 @@ function Registro() {
                     text: 'Usuario registrado con éxito',
                     icon: 'success',
                     confirmButtonText: 'OK'
-                  }).then(() => {
+                }).then(() => {
                     navigate('/login'); 
                 });
         
@@ -63,22 +65,21 @@ function Registro() {
             setError('Error al registrarse');
             MySwal.fire({
                 title: 'Error',
-                text: ('Error al registrarse', error),
+                text: 'Error al registrarse',
                 icon: 'error',
                 confirmButtonText: 'OK'
             });
         }
-
     };
 
     return (
         <>
             {/* Sección de la parte superior o NavBar */}
-            <div className="flex bg-red-600 pt-6 pl-6 justify-between">
+            <div className="flex bg-red-600 py-4 px-6 justify-between items-center">
                 <h1 className="text-white text-2xl font-bold">
                     <a href="/">LincolnTech</a>
                 </h1>
-                <h2 className="text-white font-bold mt-6 pr-6  ">
+                <h2 className="text-white font-bold">
                     <a href="/login">Iniciar Sesión</a>
                 </h2>
             </div>
@@ -130,10 +131,10 @@ function Registro() {
                             />
                         </div>
                         {/* Sección de la contraseña */}
-                        <div className="mb-4">
+                        <div className="mb-4 relative">
                             <label htmlFor="password" className="block text-gray-700 mb-2">Contraseña</label>
                             <input
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 id="password"
                                 name="password"
                                 placeholder="Escribe tu contraseña"
@@ -142,12 +143,19 @@ function Registro() {
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
                             />
+                            <button
+                                type="button"
+                                className="absolute right-3 top-10"
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                {showPassword ? <AiOutlineEyeInvisible className="text-gray-600 text-xl" /> : <AiOutlineEye className="text-gray-600 text-xl" />}
+                            </button>
                         </div>
                         {/* Sección de repetir contraseña */}
-                        <div className="mb-6">
+                        <div className="mb-6 relative">
                             <label htmlFor="confirmPassword" className="block text-gray-700 mb-2">Repetir Contraseña</label>
                             <input
-                                type="password"
+                                type={showConfirmPassword ? "text" : "password"}
                                 id="confirmPassword"
                                 name="confirmPassword"
                                 placeholder="Repite tu contraseña"
@@ -156,6 +164,13 @@ function Registro() {
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 required
                             />
+                            <button
+                                type="button"
+                                className="absolute right-3 top-10"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            >
+                                {showConfirmPassword ? <AiOutlineEyeInvisible className="text-gray-600 text-xl" /> : <AiOutlineEye className="text-gray-600 text-xl" />}
+                            </button>
                         </div>
                         {error && (
                             <div className="mb-4 text-red-500 text-center">
