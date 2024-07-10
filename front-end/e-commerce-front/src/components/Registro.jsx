@@ -50,16 +50,16 @@ function Registro() {
         
             } else {
                 const data = await response.json();
-                setError(data.message || 'Error al registrarse');
+                setError(data.message || 'Error al registrarse');                
                 MySwal.fire({
                     title: 'Error',
-                    text: data.message || 'Error al registrarse',
+                    text: data.errorMessage || 'Error al registrarse',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
             }
         } catch (error) {
-            console.error('Error al registrarse', error);
+            console.log('Error al registrarse', error);
             setError('Error al registrarse');
             MySwal.fire({
                 title: 'Error',
