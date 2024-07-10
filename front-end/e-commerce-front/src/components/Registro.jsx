@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import { useNavigate } from 'react-router-dom';
 
 const MySwal = withReactContent(Swal);
 
@@ -11,6 +12,7 @@ function Registro() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -42,20 +44,22 @@ function Registro() {
                     text: 'Usuario registrado con éxito',
                     icon: 'success',
                     confirmButtonText: 'OK'
-                  });
+                  }).then(() => {
+                    navigate('/login'); 
+                });
         
             } else {
                 const data = await response.json();
-                setError(data.message || 'Error al registrarse');
+                setError(data.message || 'Error al registrarse');                
                 MySwal.fire({
                     title: 'Error',
-                    text: data.message || 'Error al registrarse',
+                    text: data.errorMessage || 'Error al registrarse',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
             }
         } catch (error) {
-            console.error('Error al registrarse', error);
+            console.log('Error al registrarse', error);
             setError('Error al registrarse');
             MySwal.fire({
                 title: 'Error',

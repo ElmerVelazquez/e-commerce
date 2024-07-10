@@ -37,7 +37,7 @@ function Login() {
             if (!response.ok) {
                 MySwal.fire({
                     title: 'Error',
-                    text: data.message || 'Error al iniciar sesion',
+                    text: data.errorMessage || 'Error al iniciar sesion',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
@@ -58,7 +58,7 @@ function Login() {
             setError('Error al realizar la solicitud');
             MySwal.fire({
                 title: 'Error',
-                text: 'Error al realizar la solicitud' + err,
+                text: 'Error al realizar la solicitud',
                 icon: 'error',
                 confirmButtonText: 'OK'
             });
