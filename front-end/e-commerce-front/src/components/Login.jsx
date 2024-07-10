@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { AiOutlineUser, AiOutlineLock } from 'react-icons/ai';
+import { AiOutlineUser, AiOutlineLock, AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useNavigate } from 'react-router-dom';
-const MySwal = withReactContent(Swal);
 
+const MySwal = withReactContent(Swal);
 
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
@@ -37,21 +38,21 @@ function Login() {
             if (!response.ok) {
                 MySwal.fire({
                     title: 'Error',
-                    text: data.errorMessage || 'Error al iniciar sesion',
+                    text: data.errorMessage || 'Error al iniciar sesión',
                     icon: 'error',
                     confirmButtonText: 'OK'
                 });
                 return;
             }
 
-            console.log('Inicio de sesión exitoso', );
+            console.log('Inicio de sesión exitoso');
             MySwal.fire({
                 title: 'Éxito',
-                text: 'Inicio de sesión exitoso ',
+                text: 'Inicio de sesión exitoso',
                 icon: 'success',
                 confirmButtonText: 'OK'
-              }).then(() => {
-                navigate('/'); 
+            }).then(() => {
+                navigate('/');
             });
             setError('');
         } catch (err) {
@@ -68,11 +69,11 @@ function Login() {
     return (
         <>
             {/* Sección del navbar */}
-            <div className="flex bg-red-600 pt-6 pl-6 justify-between">
-                <h1 className="text-white text-2xl font-bold mt-3">
+            <div className="flex bg-red-600 py-4 px-6 justify-between items-center">
+                <h1 className="text-white text-2xl font-bold">
                     <a href="/">LincolnTech</a>
                 </h1>
-                <h2 className="text-white font-bold mt-6 mb-3 pr-6">
+                <h2 className="text-white font-bold">
                     <a href="/registro">Registrarse</a>
                 </h2>
             </div>
@@ -100,12 +101,12 @@ function Login() {
                             />
                         </div>
                         {/* Campo de entrada para la contraseña */}
-                        <div className="mb-6 flex items-center">
+                        <div className="mb-6 flex items-center relative">
                             <label htmlFor="password" className="block text-gray-700">
                                 <AiOutlineLock className="text-gray-600 text-xl" />
                             </label>
                             <input
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 id="password"
                                 name="password"
                                 placeholder="Escribe tu contraseña"
@@ -115,6 +116,13 @@ function Login() {
                                 required
                                 aria-label="Contraseña"
                             />
+                            <button
+                                type="button"
+                                className="absolute right-3"
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                {showPassword ? <AiOutlineEyeInvisible className="text-gray-600 text-xl" /> : <AiOutlineEye className="text-gray-600 text-xl" />}
+                            </button>
                         </div>
                         {/* Sección para mostrar mensajes de error */}
                         {error && (
