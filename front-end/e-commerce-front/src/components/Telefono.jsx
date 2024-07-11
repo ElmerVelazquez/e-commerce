@@ -137,7 +137,7 @@ function Telefono() {
                         <li className="mb-2"><a href="/Accesorios" className="text-gray-700 hover:text-black">Accesorios</a></li>
                         <li className="mb-2"><a href="/Desktop" className="text-gray-700 hover:text-black">Desktops</a></li>
                         <li className="mb-2"><a href="/Laptos" className="text-gray-700 hover:text-black">Laptops</a></li>
-                        <li className="mb-2"><a href="/telefono" className="text-gray-700 hover:text-black">Telefonos</a></li>
+                        <li className="mb-2"><a href="/telefono" className="text-gray-700 hover:text-black">Teléfonos</a></li>
                     </ul>
                 </div>
                 <div className="w-4/5 p-8">
