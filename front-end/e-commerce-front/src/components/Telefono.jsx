@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext, createContext } from 'react';
 import PropTypes from 'prop-types';
-import { FaShoppingCart, FaUser } from 'react-icons/fa';
+import { FaShoppingCart, FaUser, FaTrash } from 'react-icons/fa';
 import Buscador from './Buscador';
 
 // Datos de los teléfonos
@@ -19,17 +19,38 @@ const telefonoData = [
     { id: 12, name: 'Telefono Note 17 Pro', description: '256GB, Negro y desbloqueado', price: 'RD$ 14,500', image: '/src/assets/telefonoDoce.jpg' }
 ];
 
+// Crear el contexto para el carrito de compras
+const CartContext = createContext();
+
+const CartProvider = ({ children }) => {
+    const [cart, setCart] = useState([]);
+
+    const addToCart = (product) => {
+        setCart(prevCart => [...prevCart, product]);
+    };
+
+    const removeFromCart = (productId) => {
+        setCart(prevCart => prevCart.filter(product => product.id !== productId));
+    };
+
+    const totalPrice = cart.reduce((total, product) => total + parseFloat(product.price.replace('RD$', '').replace(',', '')), 0);
+
+    return (
+        <CartContext.Provider value={{ cart, addToCart, removeFromCart, totalPrice }}>
+            {children}
+        </CartContext.Provider>
+    );
+};
+
 // Componente de la barra de navegación
 const Navbar = ({ onSearch }) => {
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const userMenuRef = useRef(null);
 
-    // Función para abrir/cerrar el menú de usuario
     const toggleUserMenu = () => {
         setIsUserMenuOpen(!isUserMenuOpen);
     };
 
-    // Cerrar el menú de usuario si se hace clic fuera de él
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
@@ -68,17 +89,21 @@ Navbar.propTypes = {
 };
 
 // Componente para representar una tarjeta de teléfono
-const TelefonoCard = ({ telefono }) => (
-    <a href={`/telefonos/${telefono.id}`} className="relative border rounded-lg p-4 shadow-md block hover:shadow-lg transition-shadow duration-200">
-        <div className="w-full h-32 mb-4 flex items-center justify-center">
-            <img src={telefono.image} alt={telefono.name} className="max-h-full max-w-full object-contain" />
+const TelefonoCard = ({ telefono }) => {
+    const { addToCart } = useContext(CartContext);
+
+    return (
+        <div className="relative border rounded-lg p-4 shadow-md block hover:shadow-lg transition-shadow duration-200">
+            <div className="w-full h-32 mb-4 flex items-center justify-center">
+                <img src={telefono.image} alt={telefono.name} className="max-h-full max-w-full object-contain" />
+            </div>
+            <h3 className="text-lg font-semibold">{telefono.name}</h3>
+            <p className="text-sm">{telefono.description}</p>
+            <p className="text-md font-bold mt-2">{telefono.price}</p>
+            <FaShoppingCart className="absolute bottom-4 right-4 text-black text-3xl cursor-pointer" onClick={() => addToCart(telefono)} />
         </div>
-        <h3 className="text-lg font-semibold">{telefono.name}</h3>
-        <p className="text-sm">{telefono.description}</p>
-        <p className="text-md font-bold mt-2">{telefono.price}</p>
-        <FaShoppingCart className="absolute bottom-4 right-4 text-black text-3xl" />
-    </a>
-);
+    );
+};
 
 TelefonoCard.propTypes = {
     telefono: PropTypes.shape({
@@ -90,11 +115,10 @@ TelefonoCard.propTypes = {
     }).isRequired,
 };
 
-// Componente principal que maneja el estado y renderiza los teléfonos
+// Componente principal que maneja el estado y renderiza los teléfonos con el menú lateral
 function Telefono() {
     const [searchResults, setSearchResults] = useState(telefonoData);
 
-    // Función para manejar la búsqueda de teléfonos
     const handleSearch = (searchTerm) => {
         const results = telefonoData.filter(telefono =>
             telefono.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -104,17 +128,28 @@ function Telefono() {
     };
 
     return (
-        <>
+        <CartProvider>
             <Navbar onSearch={handleSearch} />
-            <div className="p-8">
-                <h2 className="text-2xl font-bold mb-4">Teléfonos</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    {searchResults.map(telefono => (
-                        <TelefonoCard key={telefono.id} telefono={telefono} />
-                    ))}
+            <div className="flex">
+                <div className="w-1/5 p-4 bg-gray-100">
+                    <h2 className="text-xl font-bold mb-4">Productos</h2>
+                    <ul className='font-bold'>
+                        <li className="mb-2"><a href="/Accesorios" className="text-gray-700 hover:text-black">Accesorios</a></li>
+                        <li className="mb-2"><a href="/Desktop" className="text-gray-700 hover:text-black">Desktops</a></li>
+                        <li className="mb-2"><a href="/Laptos" className="text-gray-700 hover:text-black">Laptops</a></li>
+                        <li className="mb-2"><a href="/telefono" className="text-gray-700 hover:text-black">Teléfonos</a></li>
+                    </ul>
+                </div>
+                <div className="w-4/5 p-8">
+                    <h2 className="text-2xl font-bold mb-4">Teléfonos</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        {searchResults.map(telefono => (
+                            <TelefonoCard key={telefono.id} telefono={telefono} />
+                        ))}
+                    </div>
                 </div>
             </div>
-        </>
+        </CartProvider>
     );
 }
 

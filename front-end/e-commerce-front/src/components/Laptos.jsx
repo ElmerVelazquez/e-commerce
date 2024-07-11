@@ -56,7 +56,7 @@ const Navbar = ({ onSearch }) => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
-
+     // Sección del Navbar
     return (
         <div className="flex bg-red-600 p-8 justify-between items-center">
             <h1 className="text-white text-2xl font-bold">
@@ -189,12 +189,12 @@ function Laptops() {
             <Navbar onSearch={handleSearch} />
             <div className="flex">
                 <div className="w-1/5 p-4 bg-gray-100">
-                    <h2 className="text-xl font-bold mb-4">Categorías</h2>
+                    <h2 className="text-xl font-bold mb-4">Productos</h2>
                     <ul className='font-bold'>
                         <li className="mb-2"><a href="/Accesorios" className="text-gray-700 hover:text-black">Accesorios</a></li>
                         <li className="mb-2"><a href="/Desktop" className="text-gray-700 hover:text-black">Desktops</a></li>
                         <li className="mb-2"><a href="/Laptos" className="text-gray-700 hover:text-black">Laptops</a></li>
-                        <li className="mb-2"><a href="/" className="text-gray-700 hover:text-black">Telefonos</a></li>
+                        <li className="mb-2"><a href="/telefono" className="text-gray-700 hover:text-black">Teléfonos</a></li>
                     </ul>
                 </div>
                 <div className="w-4/5 p-8">

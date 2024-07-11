@@ -18,12 +18,12 @@ const SidebarMenu = () => {
                     </Link>
                 </li>
                 <li>
-                    <Link to="/laptops" className="hover:underline">
+                    <Link to="/laptos" className="hover:underline">
                         Laptops
                     </Link>
                 </li>
                 <li>
-                    <Link to="/telefonos" className="hover:underline">
+                    <Link to="/telefono" className="hover:underline">
                         Teléfonos Móviles
                     </Link>
                 </li>
