@@ -30,6 +30,17 @@ function Registro() {
             return;
         }
 
+        const passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        if (!passwordRegex.test(password)) {
+            MySwal.fire({
+                title: 'Error',
+                text: 'La contraseña debe tener un minímo de 8 caracteres y una combinación de letras y números',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return;
+        }
+
         try {
             const response = await fetch(import.meta.env.VITE_API_USER_URL, {
                 method: 'POST',

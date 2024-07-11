@@ -8,26 +8,33 @@ import Laptos from './components/Laptos';
 import Telefono from './components/Telefono';
 import Accesorios from './components/Accesorios';
 import Desktop from './components/Desktop';
-import CartPage from './components/CartPage'; 
+import CartPage from './components/CartPage';
 import AdminPage from './components/AdminPage';
+import { CardContextProvider } from './components/CardContext';
+import { AuthProvider } from './contexts/AuthContext'; // Importa el proveedor de AuthContext
 
 function App() {
-  return (
-    <div className='App'>
-      <Router>
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/registro' element={<Registro />} />
-          <Route path='/laptos' element={<Laptos />} />
-          <Route path='/telefono' element={<Telefono />} />
-          <Route path='/accesorios' element={<Accesorios />} />
-          <Route path='/desktop' element={<Desktop />} />
-          <Route path='/cart' element={<CartPage />} /> 
-        </Routes>
-      </Router>
-    </div>
-  );
+    return (
+        <div className='App'>
+            <Router>
+                <AuthProvider> {/* Proveedor de contexto de autenticación */}
+                    <CardContextProvider> {/* Proveedor de contexto de carrito */}
+                        <Routes>
+                            <Route path='/' element={<Home />} />
+                            <Route path='/login' element={<Login />} />
+                            <Route path='/registro' element={<Registro />} />
+                            <Route path='/laptos' element={<Laptos />} />
+                            <Route path='/telefono' element={<Telefono />} />
+                            <Route path='/accesorios' element={<Accesorios />} />
+                            <Route path='/desktop' element={<Desktop />} />
+                            <Route path='/cart' element={<CartPage />} />
+                            <Route path='/adminpage' element={<AdminPage />} />
+                        </Routes>
+                    </CardContextProvider>
+                </AuthProvider>
+            </Router>
+        </div>
+    );
 }
 
 export default App;
