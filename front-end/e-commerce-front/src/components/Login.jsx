@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AiOutlineUser, AiOutlineLock, AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import { AiOutlineUser, AiOutlineLock, AiFillEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useNavigate } from 'react-router-dom';
@@ -9,7 +9,7 @@ const MySwal = withReactContent(Swal);
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
+    const [showPassword, setShowPassword] = useState(false); // Estado para mostrar u ocultar contraseña
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
@@ -45,15 +45,18 @@ function Login() {
                 return;
             }
 
-            console.log('Inicio de sesión exitoso');
-            MySwal.fire({
-                title: 'Éxito',
-                text: 'Inicio de sesión exitoso',
-                icon: 'success',
-                confirmButtonText: 'OK'
-            }).then(() => {
-                navigate('/');
-            });
+            // Guardar el rol en localStorage
+            localStorage.setItem('userRole', data.rol);
+
+            // Redirigir según el rol del usuario            
+            if (data.rol == "admin") {
+                navigate('/adminpage'); // Redirige al admin a la página AdminPage
+    
+            } else {
+                
+                navigate('/'); // Redirige al usuario regular al home
+            }
+
             setError('');
         } catch (err) {
             setError('Error al realizar la solicitud');
@@ -64,6 +67,10 @@ function Login() {
                 confirmButtonText: 'OK'
             });
         }
+    };
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword); // Cambia el estado para mostrar u ocultar contraseña
     };
 
     return (
@@ -101,12 +108,12 @@ function Login() {
                             />
                         </div>
                         {/* Campo de entrada para la contraseña */}
-                        <div className="mb-6 flex items-center relative">
+                        <div className="mb-6 relative flex items-center">
                             <label htmlFor="password" className="block text-gray-700">
                                 <AiOutlineLock className="text-gray-600 text-xl" />
                             </label>
                             <input
-                                type={showPassword ? "text" : "password"}
+                                type={showPassword ? 'text' : 'password'} // Mostrar contraseña si showPassword es true
                                 id="password"
                                 name="password"
                                 placeholder="Escribe tu contraseña"
@@ -116,12 +123,13 @@ function Login() {
                                 required
                                 aria-label="Contraseña"
                             />
+                            {/* Botón para mostrar u ocultar contraseña */}
                             <button
                                 type="button"
-                                className="absolute right-3"
-                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 focus:outline-none"
+                                onClick={togglePasswordVisibility}
                             >
-                                {showPassword ? <AiOutlineEyeInvisible className="text-gray-600 text-xl" /> : <AiOutlineEye className="text-gray-600 text-xl" />}
+                                {showPassword ? <AiOutlineEyeInvisible className="text-gray-600 text-xl" /> : <AiFillEye className="text-gray-600 text-xl" />}
                             </button>
                         </div>
                         {/* Sección para mostrar mensajes de error */}

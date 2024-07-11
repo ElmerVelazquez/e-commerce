@@ -141,7 +141,6 @@ const LaptopCard = ({ laptop }) => {
                 <img src={laptop.image} alt={laptop.name} className="max-h-full max-w-full object-contain" />
             </div>
             <h3 className="text-lg font-semibold">{laptop.name}</h3>
-            <p className="text-sm">{laptop.description}</p>
             <p className="text-md font-bold mt-2">{laptop.price}</p>
             <FaShoppingCart className="absolute bottom-4 right-4 text-black text-3xl cursor-pointer" onClick={() => addToCart(laptop)} />
         </div>
@@ -152,20 +151,18 @@ LaptopCard.propTypes = {
     laptop: PropTypes.shape({
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
-        description: PropTypes.string.isRequired,
         price: PropTypes.string.isRequired,
         image: PropTypes.string.isRequired,
     }).isRequired,
 };
 
-// Componente principal que maneja el estado y renderiza las laptops
+// Componente principal que maneja el estado y renderiza las laptops con el menú lateral
 function Laptops() {
     const [searchResults, setSearchResults] = useState(laptopsData);
 
     const handleSearch = (searchTerm) => {
         const results = laptopsData.filter(laptop =>
-            laptop.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            laptop.description.toLowerCase().includes(searchTerm.toLowerCase())
+            laptop.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setSearchResults(results);
     };
@@ -173,12 +170,23 @@ function Laptops() {
     return (
         <CartProvider>
             <Navbar onSearch={handleSearch} />
-            <div className="p-8">
-                <h2 className="text-2xl font-bold mb-4">Laptops</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    {searchResults.map(laptop => (
-                        <LaptopCard key={laptop.id} laptop={laptop} />
-                    ))}
+            <div className="flex">
+                <div className="w-1/5 p-4 bg-gray-100">
+                    <h2 className="text-xl font-bold mb-4">Productos</h2>
+                    <ul className='font-bold'>
+                        <li className="mb-2"><a href="/Accesorios" className="text-gray-700 hover:text-black">Accesorios</a></li>
+                        <li className="mb-2"><a href="/Desktop" className="text-gray-700 hover:text-black">Desktops</a></li>
+                        <li className="mb-2"><a href="/Laptos" className="text-gray-700 hover:text-black">Laptops</a></li>
+                        <li className="mb-2"><a href="/Telefono" className="text-gray-700 hover:text-black">Telefonos</a></li>
+                    </ul>
+                </div>
+                <div className="w-4/5 p-8">
+                    <h2 className="text-2xl font-bold mb-4">Laptops</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        {searchResults.map(laptop => (
+                            <LaptopCard key={laptop.id} laptop={laptop} />
+                        ))}
+                    </div>
                 </div>
             </div>
         </CartProvider>
