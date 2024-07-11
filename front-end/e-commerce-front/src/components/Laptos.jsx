@@ -2,22 +2,6 @@ import React, { useState, useRef, useEffect, useContext, createContext } from 'r
 import PropTypes from 'prop-types';
 import { FaShoppingCart, FaUser, FaTrash } from 'react-icons/fa';
 
-// Datos de las laptops
-const laptopsData = [
-    { id: 1, name: 'MacBook Air 2022', description: 'm3, 8GB Ram, 512 SSD, Cámara hd y Bluetooth', price: 'RD$ 65,000', image: '/src/assets/laptoUno.jpg' },
-    { id: 2, name: 'Lenovo Laptop', description: '8GB RAM, i7, 256 SSD, Huella, cámara HD y Bluetooth', price: 'RD$ 26,000', image: '/src/assets/laptoDos.jpg' },
-    { id: 3, name: 'Acer Aspire 5 Slim', description: 'Ryzen 3, 4GB RAM, 128 SSD, Cámara HD y Bluetooth', price: 'RD$ 22,000', image: '/src/assets/laptoTres.jpg' },
-    { id: 4, name: 'Lenovo Laptop', description: '4GB RAM, i3, 128 SSD, Cámara HD Y Bluetooth', price: 'RD$ 16,000', image: '/src/assets/laptoCuatro.jpg' },
-    { id: 5, name: 'Lenovo Laptop', description: '16GB RAM, 512 SSD, i7, Cámara HD y Bluetooth', price: 'RD$ 56,000', image: '/src/assets/laptoCinco.jpg' },
-    { id: 6, name: 'MacBook Pro', description: 'M3, 11 Núcleos, 18GB RAM, 512 SSD, Cámara HD y Bluetooth', price: 'RD$ 82,000', image: '/src/assets/laptoSeis.jpg' },
-    { id: 7, name: 'Asus Gaming', description: '12 Núcleos, 18GB RAM, 1TB SSD, Cámara HD y Bluetooth', price: 'RD$ 75,000', image: '/src/assets/laptoSiete.jpg' },
-    { id: 8, name: 'Asus Vivobook', description: 'i5, 36GB RAM, 2TB SSD, Cámara HD y Bluetooth', price: 'RD$ 65,000', image: '/src/assets/laptoOcho.jpg' },
-    { id: 9, name: 'Lenovo Legion 5i', description: 'Gaming Laptop, i7, 8GB RAM, NVIDIA GeForce RTX 3050 Ti Graphics', price: 'RD$ 96,000', image: '/src/assets/laptoNueve.jpg' },
-    { id: 10, name: 'HP 17', description: '32GB RAM, 1TB SSD, Cámara HD y Bluetooth', price: 'RD$ 28,000', image: '/src/assets/laptoDiez.jpg' },
-    { id: 11, name: 'MacBook Air', description: 'M3, 8GB RAM, 256 SSD, Cámara HD y Bluetooth', price: 'RD$ 63,000', image: '/src/assets/laptoOnce.jpg' },
-    { id: 12, name: 'Dell Inspiron', description: '16GB RAM, 256 SSD, Cámara HD y Bluetooth', price: 'RD$ 30,000', image: '/src/assets/laptoDoce.jpg' },
-];
-
 // Crear el contexto para el carrito de compras
 const CartContext = createContext();
 
@@ -32,7 +16,7 @@ const CartProvider = ({ children }) => {
         setCart(prevCart => prevCart.filter(product => product.id !== productId));
     };
 
-    const totalPrice = cart.reduce((total, product) => total + parseFloat(product.price.replace('RD$', '').replace(',', '')), 0);
+    const totalPrice = cart.reduce((total, product) => total + product.price, 0);
 
     return (
         <CartContext.Provider value={{ cart, addToCart, removeFromCart, totalPrice }}>
@@ -99,10 +83,10 @@ const Navbar = ({ onSearch }) => {
                                 <div>
                                     {cart.map(product => (
                                         <div key={product.id} className="flex justify-between items-center mb-2">
-                                            <img src={product.image} alt={product.name} className="w-16 h-16 object-cover" />
+                                            <img src={product.urlImg} alt={product.name} className="w-16 h-16 object-cover" />
                                             <div className="flex-1 ml-2">
                                                 <h3 className="text-sm font-semibold">{product.name}</h3>
-                                                <p className="text-sm">{product.price}</p>
+                                                <p className="text-sm">RD$ {product.price}</p>
                                             </div>
                                             <FaTrash className="text-red-600 cursor-pointer" onClick={() => removeFromCart(product.id)} />
                                         </div>
@@ -138,11 +122,11 @@ const LaptopCard = ({ laptop }) => {
     return (
         <div className="relative border rounded-lg p-4 shadow-md block hover:shadow-lg transition-shadow duration-200">
             <div className="w-full h-32 mb-4 flex items-center justify-center">
-                <img src={laptop.image} alt={laptop.name} className="max-h-full max-w-full object-contain" />
+                <img src={laptop.urlImg} alt={laptop.name} className="max-h-full max-w-full object-contain" />
             </div>
             <h3 className="text-lg font-semibold">{laptop.name}</h3>
             <p className="text-sm">{laptop.description}</p>
-            <p className="text-md font-bold mt-2">{laptop.price}</p>
+            <p className="text-md font-bold mt-2">RD$ {laptop.price}</p>
             <FaShoppingCart className="absolute bottom-4 right-4 text-black text-3xl cursor-pointer" onClick={() => addToCart(laptop)} />
         </div>
     );
@@ -153,22 +137,56 @@ LaptopCard.propTypes = {
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
         description: PropTypes.string.isRequired,
-        price: PropTypes.string.isRequired,
-        image: PropTypes.string.isRequired,
+        price: PropTypes.number.isRequired,
+        urlImg: PropTypes.string.isRequired,
     }).isRequired,
 };
 
 // Componente principal que maneja el estado y renderiza las laptops
 function Laptops() {
-    const [searchResults, setSearchResults] = useState(laptopsData);
+    const [searchResults, setSearchResults] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        fetch(import.meta.env.VITE_API_PRODUCT_URL) // Cambia la URL por la de tu API
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.isSuccess) {
+                    // Verificar que los productos existan y estén definidos
+                    const allProducts = data.value || [];
+                    setSearchResults(allProducts);
+                } else {
+                    throw new Error(data.errorMessage);
+                }
+                setLoading(false);
+            })
+            .catch(error => {
+                setError(error);
+                setLoading(false);
+            });
+    }, []);
 
     const handleSearch = (searchTerm) => {
-        const results = laptopsData.filter(laptop =>
+        const results = searchResults.filter(laptop =>
             laptop.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             laptop.description.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setSearchResults(results);
     };
+
+    if (loading) {
+        return <p>Cargando...</p>;
+    }
+
+    if (error) {
+        return <p>Error: {error.message}</p>;
+    }
 
     return (
         <CartProvider>
@@ -176,8 +194,8 @@ function Laptops() {
             <div className="p-8">
                 <h2 className="text-2xl font-bold mb-4">Laptops</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    {searchResults.map(laptop => (
-                        <LaptopCard key={laptop.id} laptop={laptop} />
+                    {searchResults.map(product => (
+                        <LaptopCard key={product.id} laptop={product} />
                     ))}
                 </div>
             </div>
@@ -186,3 +204,4 @@ function Laptops() {
 }
 
 export default Laptops;
+
