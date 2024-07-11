@@ -142,6 +142,7 @@ LaptopCard.propTypes = {
 
 // Componente principal que maneja el estado y renderiza las laptops con el menú lateral
 function Laptops() {
+    const [initialProducts, setInitialProducts] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -158,6 +159,7 @@ function Laptops() {
                 if (data.isSuccess) {
                     // Verificar que los productos existan y estén definidos
                     const allProducts = data.value || [];
+                    setInitialProducts(allProducts);
                     setSearchResults(allProducts);
                 } else {
                     throw new Error(data.errorMessage);
@@ -171,7 +173,7 @@ function Laptops() {
     }, []);
 
     const handleSearch = (searchTerm) => {
-        const results = laptopsData.filter(laptop =>
+        const results = initialProducts.filter(laptop =>
             laptop.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setSearchResults(results);
