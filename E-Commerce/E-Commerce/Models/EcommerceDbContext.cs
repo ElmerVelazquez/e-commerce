@@ -230,6 +230,7 @@ public partial class EcommerceDbContext : DbContext
             .HasMaxLength(100);
             entity.Property(e => e.Id)
             .ValueGeneratedOnAdd();
+            entity.Property(e => e.RefreshToken).HasMaxLength(123);
         });
 
         OnModelCreatingPartial(modelBuilder);

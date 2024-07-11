@@ -1,32 +1,25 @@
 using AutoMapper;
-using E_Commerce.Interfaces;
 using E_Commerce.Middlewares;
 using E_Commerce.Models;
 using E_Commerce.Repository;
 using E_Commerce.Utilities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using Azure.Identity;
-using Microsoft.Extensions.Hosting;
-using static System.Net.Mime.MediaTypeNames;
-using System.Runtime.CompilerServices;
-using Microsoft.Extensions.Configuration;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-//var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri"));
-//builder.Configuration.AddAzureKeyVault(keyVaultEndpoint, new DefaultAzureCredential());
+
 var config = builder.Configuration;
-if (builder.Environment.IsDevelopment())
-{
-   // builder.Configuration.AddUserSecrets<Program>();
-}
-//builder.Configuration.AddUserSecrets<Program>();//
+//if (builder.Environment.IsDevelopment()) { 
+
+//   builder.Configuration.AddUserSecrets<Program>();
+//}
+
 // Add services to the container.
 builder.Services.AddAuthentication(x =>
 {
@@ -105,7 +98,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
 
-var connection_string = builder.Configuration.GetConnectionString("somee"); 
+var connection_string = builder.Configuration.GetConnectionString("Default"); 
 builder.Services.AddDbContext<EcommerceDbContext>(options =>
     
     options.UseSqlServer(connection_string)

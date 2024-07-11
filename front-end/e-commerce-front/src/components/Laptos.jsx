@@ -172,12 +172,12 @@ function Laptops() {
             <Navbar onSearch={handleSearch} />
             <div className="flex">
                 <div className="w-1/5 p-4 bg-gray-100">
-                    <h2 className="text-xl font-bold mb-4">Productos</h2>
+                    <h2 className="text-xl font-bold mb-4">Categorías</h2>
                     <ul className='font-bold'>
                         <li className="mb-2"><a href="/Accesorios" className="text-gray-700 hover:text-black">Accesorios</a></li>
                         <li className="mb-2"><a href="/Desktop" className="text-gray-700 hover:text-black">Desktops</a></li>
                         <li className="mb-2"><a href="/Laptos" className="text-gray-700 hover:text-black">Laptops</a></li>
-                        <li className="mb-2"><a href="/Telefono" className="text-gray-700 hover:text-black">Telefonos</a></li>
+                        <li className="mb-2"><a href="/" className="text-gray-700 hover:text-black">Telefonos</a></li>
                     </ul>
                 </div>
                 <div className="w-4/5 p-8">

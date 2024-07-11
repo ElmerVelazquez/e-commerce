@@ -11,8 +11,8 @@ namespace E_Commerce.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly IBaseRepository<Category> _repo;
-        public CategoryController(IBaseRepository<Category> repo)
+        private readonly ICategoryRepository _repo;
+        public CategoryController(ICategoryRepository repo)
         {
             _repo = repo;
         }

@@ -32,17 +32,43 @@ namespace E_Commerce.Controllers
             var regis = await _context.Users.Where(x => user.Email.Equals(x.Email)).FirstAsync();
             if (regis == null) return NotFound(Result.Fail("usuario no encontrado"));
             var regispass = await _context.Passwords.Where(x => regis.Id == x.UserId).FirstAsync();
-            if (!PasswordHasher.VerifyPassword(regispass.PasswordHash, user.Password)) return Unauthorized(Result.Fail("Credenciales invalidas"));      
+            if (!PasswordHasher.VerifyPassword(regispass.PasswordHash, user.Password)) return Unauthorized(Result.Fail("Credenciales invalidas"));
 
-            var tokenhandler = new JwtSecurityTokenHandler();
+            var token = GenerateAccessToken(regis);
+
+            var refreshToken = GenerateRefreshToken();
+
+            var refreshfield = await _context.Passwords.Where(u => u.UserId == regis.Id).FirstOrDefaultAsync();
+            refreshfield.RefreshToken = refreshToken;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Id = regis.Id, Rol = regis.Rol, Token = token, RefreshToken = refreshToken });
+        }
+        [AllowAnonymous]
+        [HttpPost("refreshtoken")]
+        public async Task<IActionResult> RefreshToken(string refreshTokenRequest)
+        {
+            var refresht = await _context.Passwords.FirstOrDefaultAsync(x => x.RefreshToken == refreshTokenRequest);
+            if (refresht == null)
+                return NotFound(Result.Fail("Refresh token inválido"));
+
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == refresht.UserId);
+            var token = GenerateAccessToken(user);
+
+            return Ok(new { Token = token });
+        }
+        private string GenerateAccessToken(User user)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration["jwtSettings:Key"]);
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.NameIdentifier, regis.Id.ToString()),
-                    new Claim(ClaimTypes.Name, user.Email),
-                    new Claim(ClaimTypes.Role, regis.Rol)
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, user.Email),
+            new Claim(ClaimTypes.Role, user.Rol)
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 Issuer = _configuration["jwtSettings:Issuer"],
@@ -50,10 +76,14 @@ namespace E_Commerce.Controllers
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 
-            var token = tokenhandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenhandler.WriteToken(token);
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
 
-            return Ok(new {id=regis.Id, rol= regis.Rol, Token = tokenString });
+        private string GenerateRefreshToken()
+        {
+            var refreshToken = Guid.NewGuid().ToString();
+            return refreshToken;
         }
 
         public class UserLogin
