@@ -8,16 +8,16 @@ export const CardContextProvider = ({ children }) => {
     const [totalPrice, setTotalPrice] = useState(0);
 
     const addToCart = (product) => {
-        // Lógica para añadir producto al carrito
+        // Assuming 'price' is a string with format 'RD$ XXX'
+        const price = parseFloat(product.price.replace(/[^\d.-]/g, ''));
         setCart([...cart, product]);
-        setTotalPrice(totalPrice + parseFloat(product.price.replace(/[^\d.-]/g, ''))); // Asumiendo que 'price' es un string con formato 'RD$ XXX'
+        setTotalPrice(totalPrice + price);
     };
 
     const removeFromCart = (productId) => {
-        // Lógica para eliminar producto del carrito
         const updatedCart = cart.filter(item => item.id !== productId);
-        setCart(updatedCart);
         const updatedTotalPrice = updatedCart.reduce((acc, item) => acc + parseFloat(item.price.replace(/[^\d.-]/g, '')), 0);
+        setCart(updatedCart);
         setTotalPrice(updatedTotalPrice);
     };
 

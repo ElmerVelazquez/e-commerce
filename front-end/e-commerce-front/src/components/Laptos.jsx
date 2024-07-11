@@ -16,7 +16,7 @@ const CartProvider = ({ children }) => {
         setCart(prevCart => prevCart.filter(product => product.id !== productId));
     };
 
-    const totalPrice = cart.reduce((total, product) => total + product.price, 0);
+    const totalPrice = cart.reduce((total, product) => total + parseFloat(product.price.replace('RD$', '').replace(',', '')), 0);
 
     return (
         <CartContext.Provider value={{ cart, addToCart, removeFromCart, totalPrice }}>
@@ -83,10 +83,10 @@ const Navbar = ({ onSearch }) => {
                                 <div>
                                     {cart.map(product => (
                                         <div key={product.id} className="flex justify-between items-center mb-2">
-                                            <img src={product.urlImg} alt={product.name} className="w-16 h-16 object-cover" />
+                                            <img src={product.image} alt={product.name} className="w-16 h-16 object-cover" />
                                             <div className="flex-1 ml-2">
                                                 <h3 className="text-sm font-semibold">{product.name}</h3>
-                                                <p className="text-sm">RD$ {product.price}</p>
+                                                <p className="text-sm">{product.price}</p>
                                             </div>
                                             <FaTrash className="text-red-600 cursor-pointer" onClick={() => removeFromCart(product.id)} />
                                         </div>
@@ -125,8 +125,7 @@ const LaptopCard = ({ laptop }) => {
                 <img src={laptop.urlImg} alt={laptop.name} className="max-h-full max-w-full object-contain" />
             </div>
             <h3 className="text-lg font-semibold">{laptop.name}</h3>
-            <p className="text-sm">{laptop.description}</p>
-            <p className="text-md font-bold mt-2">RD$ {laptop.price}</p>
+            <p className="text-md font-bold mt-2">RD$ {laptop.price.toLocaleString('en-US')}</p>
             <FaShoppingCart className="absolute bottom-4 right-4 text-black text-3xl cursor-pointer" onClick={() => addToCart(laptop)} />
         </div>
     );
@@ -136,13 +135,12 @@ LaptopCard.propTypes = {
     laptop: PropTypes.shape({
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
-        description: PropTypes.string.isRequired,
         price: PropTypes.number.isRequired,
         urlImg: PropTypes.string.isRequired,
     }).isRequired,
 };
 
-// Componente principal que maneja el estado y renderiza las laptops
+// Componente principal que maneja el estado y renderiza las laptops con el menú lateral
 function Laptops() {
     const [searchResults, setSearchResults] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -173,21 +171,19 @@ function Laptops() {
     }, []);
 
     const handleSearch = (searchTerm) => {
-        const results = searchResults.filter(laptop =>
-            laptop.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            laptop.description.toLowerCase().includes(searchTerm.toLowerCase())
+        const results = laptopsData.filter(laptop =>
+            laptop.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setSearchResults(results);
     };
 
     if (loading) {
-        return <p>Cargando...</p>;
+        return <div>Loading...</div>;
     }
 
     if (error) {
-        return <p>Error: {error.message}</p>;
+        return <div>Error: {error}</div>;
     }
-
     return (
         <CartProvider>
             <Navbar onSearch={handleSearch} />
@@ -214,6 +210,4 @@ function Laptops() {
     );
 }
 
-
 export default Laptops;
-
