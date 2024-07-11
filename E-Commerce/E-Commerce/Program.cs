@@ -15,9 +15,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 var config = builder.Configuration;
-//if (builder.Environment.IsDevelopment())
-//{
-  // builder.Configuration.AddUserSecrets<Program>();
+//if (builder.Environment.IsDevelopment()) { 
+
+//   builder.Configuration.AddUserSecrets<Program>();
 //}
 
 // Add services to the container.
