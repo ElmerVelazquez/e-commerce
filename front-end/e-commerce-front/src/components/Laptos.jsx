@@ -56,7 +56,8 @@ const Navbar = ({ onSearch }) => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
-     // Sección del Navbar
+
+    // Sección del Navbar
     return (
         <div className="flex bg-red-600 p-8 justify-between items-center">
             <h1 className="text-white text-2xl font-bold">
@@ -126,6 +127,7 @@ const LaptopCard = ({ laptop }) => {
             </div>
             <h3 className="text-lg font-semibold">{laptop.name}</h3>
             <p className="text-md font-bold mt-2">RD$ {laptop.price.toLocaleString('en-US')}</p>
+            <p className="text-sm mt-2">{laptop.description}</p> {/* Agregar descripción */}
             <FaShoppingCart className="absolute bottom-4 right-4 text-black text-3xl cursor-pointer" onClick={() => addToCart(laptop)} />
         </div>
     );
@@ -135,6 +137,7 @@ LaptopCard.propTypes = {
     laptop: PropTypes.shape({
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
+        description: PropTypes.string.isRequired, // Asegurarse de incluir description
         price: PropTypes.number.isRequired,
         urlImg: PropTypes.string.isRequired,
     }).isRequired,
