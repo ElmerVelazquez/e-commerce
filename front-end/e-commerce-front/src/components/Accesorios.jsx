@@ -2,26 +2,6 @@ import React, { useState, useRef, useEffect, useContext, createContext } from 'r
 import PropTypes from 'prop-types';
 import { FaShoppingCart, FaUser, FaTrash } from 'react-icons/fa';
 
-// Datos de los accesorios
-const accessoryData = [
-    { id: 1, name: 'Teclado Rii RK100', price: 'RD$ 750', image: '/src/assets/accesorioUno.jpg' },
-    { id: 2, name: 'Teclado Logitech', price: 'RD$ 5,600', image: '/src/assets/accesorioDos.jpg' },
-    { id: 3, name: 'Mouse Razer Basilisk v3', price: 'RD$ 2,450', image: '/src/assets/accesorioTres.jpg' },
-    { id: 4, name: 'AirPods Apple', price: 'RD$ 5,800', image:'/src/assets/accesorioCuatro.jpg' },
-    { id: 5, name: 'Auriculares Sony', price: 'RD$ 3,700', image: '/src/assets/accesoriocinco.jpg' },
-    { id: 6, name: 'Beats Studio Pro', price: 'RD$ 7,800', image:'/src/assets/accesorioSeis.jpg' },
-    { id: 7, name: 'Alfombrilla de mouse', price:'RD$ 350', image:'/src/assets/accesorioSiete.jpg' },
-    { id: 8, name: 'Alfombrilla con carga inalambrica', price:'RD$ 850', image:'/src/assets/accesorioOcho.jpg' },
-    { id: 9, name: 'Teclado Mecánico', price:'RD$ 4,200', image:'/src/assets/accesorioNueve.jpg' },
-    { id: 10, name: 'Soporte para Laptops', price:'RD$ 950', image:'src/assets/accesorioDiez.jpg' },
-    { id: 11, name: 'Protector de pantalla para iphone 15 Pro Max', price: 'RD$ 1,850', image:'/src/assets/accesorioOnce.jpg' },
-    { id: 12, name: 'Cover para iphone 12', price:'RD$ 1,950', image:'/src/assets/accesorioDoce.jpg' },
-    { id: 13, name: 'Mouse TECKNET', price:'RD$ 850', image:'/src/assets/accesorioTrece.jpg' },
-    { id: 14, name: 'Teclado y Mouse Lenovo', price:'RD$ 1,350', image:'/src/assets/accesorioCatorce.jpg' },
-    { id: 15, name: 'Auriculares Apple', price:'RD$ 1,050', image:'src/assets/accesorioQuince.jpg' },
-    { id: 16, name: 'Auriculares Philips', price: 'RD$ 1,350', image:'/src/assets/accesorioDiesCi.jpg' },
-];
-
 // Crear el contexto para el carrito de compras
 const CartContext = createContext();
 
@@ -142,10 +122,10 @@ const AccessoryCard = ({ accessory }) => {
     return (
         <div className="relative border rounded-lg p-4 shadow-md block hover:shadow-lg transition-shadow duration-200">
             <div className="w-full h-32 mb-4 flex items-center justify-center">
-                <img src={accessory.image} alt={accessory.name} className="max-h-full max-w-full object-contain" />
+                <img src={accessory.urlImg} alt={accessory.name} className="max-h-full max-w-full object-contain" />
             </div>
             <h3 className="text-lg font-semibold">{accessory.name}</h3>
-            <p className="text-md font-bold mt-2">{accessory.price}</p>
+            <p className="text-md font-bold mt-2">RD$ {accessory.price.toLocaleString('en-US')}</p>
             <FaShoppingCart className="absolute bottom-4 right-4 text-black text-3xl cursor-pointer" onClick={() => addToCart(accessory)} />
         </div>
     );
@@ -156,20 +136,56 @@ AccessoryCard.propTypes = {
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
         price: PropTypes.string.isRequired,
-        image: PropTypes.string.isRequired,
+        urlImg: PropTypes.string.isRequired,
     }).isRequired,
 };
 
 // Componente principal que maneja el estado y renderiza los accesorios con el menú lateral
 function Accessories() {
-    const [searchResults, setSearchResults] = useState(accessoryData);
+    const [searchResults, setSearchResults] = useState([]);
+    const [initialProducts, setInitialProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        fetch(import.meta.env.VITE_API_PRODUCT_URL) // Cambia la URL por la de tu API
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.isSuccess) {
+                    // Verificar que los productos existan y estén definidos
+                    const allProducts = data.value || [];
+                    const acceproducts = allProducts.filter(product => product.categoryId === 4);                    
+                    setInitialProducts(acceproducts);
+                    setSearchResults(acceproducts);
+                } else {
+                    throw new Error(data.errorMessage);
+                }
+                setLoading(false);
+            })
+            .catch(error => {
+                setError(error);
+                setLoading(false);
+            });
+    }, []);
 
     const handleSearch = (searchTerm) => {
-        const results = accessoryData.filter(accessory =>
+        const results = initialProducts.filter(accessory =>
             accessory.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setSearchResults(results);
     };
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
 
     return (
         <CartProvider>
