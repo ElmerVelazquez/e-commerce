@@ -13,7 +13,7 @@ function AdminPage() {
     const [newProduct, setNewProduct] = useState({ name: '', price: '', description: '' });
 
     useEffect(() => {
-        if (!user || user.role !== 'admin') {
+        if (!user || user.rol !== 'admin') {
             MySwal.fire({
                 title: 'Acceso Denegado',
                 text: 'No tienes permiso para acceder a esta página',
@@ -26,13 +26,11 @@ function AdminPage() {
     }, [user, navigate]);
 
     useEffect(() => {
-        // Fetch products from API when the component mounts
+        // Fetch 
         const fetchProducts = async () => {
             try {
-                const response = await fetch(import.meta.env.VITE_API_PRODUCTS_URL);
-                console.log(response)
-                const data = await response.json;
-                console.log(data)
+                const response = await fetch(import.meta.env.VITE_API_PRODUCT_URL);
+                const data = await response.json();
                 setProducts(data);
             } catch (error) {
                 console.error('Error fetching products:', error);
@@ -46,7 +44,7 @@ function AdminPage() {
         e.preventDefault();
     
         try {
-            const response = await fetch(import.meta.env.VITE_API_PRODUCTS_URL, {
+            const response = await fetch(import.meta.env.VITE_API_PRODUCT_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -56,7 +54,7 @@ function AdminPage() {
     
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.errorMessage || 'Error adding product');
+                throw new Error(errorData.errorMessage || 'Error agregando producto');
             }
     
             const responseData = await response.json();
@@ -72,7 +70,7 @@ function AdminPage() {
                 confirmButtonText: 'OK'
             });
         } catch (error) {
-            console.error('Error adding product:', error);
+            console.error('Error agregando productos:', error);
             MySwal.fire({
                 title: 'Error',
                 text: 'No se pudo añadir el producto',
@@ -84,13 +82,13 @@ function AdminPage() {
     
     const handleDeleteProduct = async (productId) => {
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_PRODUCTS_URL}/${productId}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_PRODUCT_URL}/${productId}`, {
                 method: 'DELETE',
             });
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || 'Error deleting product');
+                throw new Error(errorData.message || 'Error al eliminar producto');
             }
 
             setProducts(products.filter(product => product.id !== productId));
@@ -102,7 +100,7 @@ function AdminPage() {
                 confirmButtonText: 'OK'
             });
         } catch (error) {
-            console.error('Error deleting product:', error);
+            console.error('Error al eliminar producto:', error);
             MySwal.fire({
                 title: 'Error',
                 text: 'No se pudo eliminar el producto',
@@ -116,9 +114,9 @@ function AdminPage() {
         <div className="container mx-auto p-8">
             <h1 className="text-2xl font-bold mb-4">Admin Page</h1>
             <form onSubmit={handleAddProduct} className="mb-4">
-                <h2 className="text-xl font-bold mb-2">Add New Product</h2>
+                <h2 className="text-xl font-bold mb-2">Agregar nuevos productos</h2>
                 <div className="mb-2">
-                    <label className="block text-gray-700">Product Name</label>
+                    <label className="block text-gray-700">Nombre del producto</label>
                     <input
                         type="text"
                         value={newProduct.name}
@@ -128,7 +126,7 @@ function AdminPage() {
                     />
                 </div>
                 <div className="mb-2">
-                    <label className="block text-gray-700">Price</label>
+                    <label className="block text-gray-700">Precio</label>
                     <input
                         type="number"
                         value={newProduct.price}
@@ -138,7 +136,7 @@ function AdminPage() {
                     />
                 </div>
                 <div className="mb-2">
-                    <label className="block text-gray-700">Description</label>
+                    <label className="block text-gray-700">Descripción</label>
                     <textarea
                         value={newProduct.description}
                         onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
@@ -147,10 +145,10 @@ function AdminPage() {
                     />
                 </div>
                 <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
-                    Add Product
+                    Agregar productos
                 </button>
             </form>
-            <h2 className="text-xl font-bold mb-2">Products</h2>
+            <h2 className="text-xl font-bold mb-2">Productos</h2>
             <ul>
                 {products.map(product => (
                     <li key={product.id} className="mb-2 flex justify-between items-center">
@@ -163,7 +161,7 @@ function AdminPage() {
                             onClick={() => handleDeleteProduct(product.id)}
                             className="bg-red-500 text-white px-4 py-2 rounded"
                         >
-                            Delete
+                            Eliminar
                         </button>
                     </li>
                 ))}
