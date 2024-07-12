@@ -10,7 +10,7 @@ function AdminPage() {
     const { user } = useAuth(); // Obtener el usuario autenticado del contexto
     const navigate = useNavigate(); // Hook para la navegación
     const [products, setProducts] = useState([]); // Estado para los productos
-    const [newProduct, setNewProduct] = useState({ name: '', price: '', description: '' }); // Estado para el nuevo producto
+    const [newProduct, setNewProduct] = useState({ name: '', price: 0, description: '',stock:0,urlImg:'' }); // Estado para el nuevo producto
 
     useEffect(() => {
 
@@ -51,29 +51,34 @@ function AdminPage() {
         try {
             const response = await fetch(import.meta.env.VITE_API_PRODUCT_URL, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
+                headers: {       
+                    'Content-Type': 'application/json',             
+                    'Authorization': 'bearer ' + user.token,
                 },
                 body: JSON.stringify(newProduct), // Enviar el nuevo producto en el cuerpo de la solicitud
+                
             });
-    
+            
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.errorMessage || 'Error agregando producto');
             }
     
             const responseData = await response.json();
-            const addedProduct = responseData.value[0]; // Asumiendo que solo se agrega un producto a la vez
+            const addedProduct = responseData.value; // Asumiendo que solo se agrega un producto a la vez
     
             setProducts([...products, addedProduct]); // Actualizar el estado con el nuevo producto
-            setNewProduct({ name: '', description: '', price: '', stock: '', img: '' }); // Limpiar el formulario
-    
+            setNewProduct({ name: '', description: '', price: 0, stock: 0, urlImg: '' }); // Limpiar el formulario
+            console.log(addedProduct) 
+            console.log(products) 
             MySwal.fire({
                 title: 'Éxito',
                 text: 'Producto añadido con éxito',
                 icon: 'success',
                 confirmButtonText: 'OK'
+                
             });
+
         } catch (error) {
             console.error('Error agregando productos:', error);
             MySwal.fire({
@@ -89,6 +94,10 @@ function AdminPage() {
         try {
             const response = await fetch(`${import.meta.env.VITE_API_PRODUCT_URL}/${productId}`, {
                 method: 'DELETE',
+                headers: {       
+                    'Content-Type': 'application/json',             
+                    'Authorization': 'bearer ' + user.token,
+                },
             });
 
             if (!response.ok) {
@@ -158,7 +167,7 @@ function AdminPage() {
                     <input
                         type="number"
                         value={newProduct.stock}
-                        onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })} // Actualizar el precio del producto
+                        onChange={(e) => setNewProduct({ ...newProduct, stock:e.target.value })} // Actualizar el precio del producto
                         className="w-full px-3 py-2 border rounded"
                         required
                     />
@@ -169,8 +178,8 @@ function AdminPage() {
                     <label className="block text-gray-700">Url img</label>
                     <input
                         type="text"
-                        value={newProduct.img}
-                        onChange={(e) => setNewProduct({ ...newProduct, img: e.target.value })} // Actualizar el nombre del producto
+                        value={newProduct.urlImg}
+                        onChange={(e) => setNewProduct({ ...newProduct, urlImg: e.target.value })} // Actualizar el nombre del producto
                         className="w-full px-3 py-2 border rounded"
                         required
                     />
@@ -185,7 +194,7 @@ function AdminPage() {
             <ul>
                 {products.map(product => (
                     <li key={product.id} className="mb-2 flex justify-between items-center">
-                        <div>
+                        <div>                            
                             <h3 className="text-lg font-bold">{product.name}</h3>
                             <p className="text-gray-700">{product.description}</p>
                             <p className="text-gray-700">${product.price}</p>
