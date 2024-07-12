@@ -3,20 +3,6 @@ import PropTypes from 'prop-types';
 import { FaShoppingCart, FaUser, FaTrash } from 'react-icons/fa';
 
 // Datos de los desktops
-const desktopData = [
-    {id: 1, name: 'Desktop Thermaltake', description: 'Windows 11, 2,5 GHz, 128GB y 16 RAM', price: 'RD$ 53, 100', image: '/src/assets/desktopUno.jpg'},
-    {id: 2, name: 'Desktop Skytech Gaming', description:'Core i5, 2.5 GHz, 1TB y 16G RAM', price: 'RD$ 50, 600', image: '/src/assets/desktopDos.jpg'},
-    {id: 3, name: 'Desktop CyberpowerPC ', description: 'Windows 11, core i7, 2.1 GHz, 1TB y 16 RAM', price: 'RD$ 76, 7000', image: '/src/assets/desktopTres.jpg'},
-    {id: 4, name: 'Desktop Asus', description:'Windows 11, core i5, 512GB, 8G RAM', price: 'RD$ 44, 190', image:'/src/assets/desktopCuatro.jpg'},
-    {id: 5, name: 'Desktop Dell optiplex', description: 'core i7, 3.9 GHz, 1TB y 32 RAM', price: 'RD$ 12, 000', image: '/src/assets/Desktopcinco.jpg'},
-    {id: 6, name: 'Desktop Inspiron 3020S', description:'core i5, 512GB + disco duro de 1TB y 16 RAM', price: 'RD$ 29, 800', image:'/src/assets/desktopSeis.jpg'},
-    {id: 7, name: 'Desktop Dell Vostro 3000', description:'core i7, 512GB Y 32 RAM', price:'RD$ 22, 500', image:'/src/assets/desktopSiete.jpg'},
-    {id: 8, name: 'Dekptop BUYPOWER Y40 ', description:'Core i7, RTX 4060Ti, 1TB y 32 RAM', price:'RD$ 94, 400', image:'/src/assets/DesktopOcho.jpg'},
-    {id: 9, name: 'Desktop Dell XPS 8950', description:'Core i7, 512GB Y 32 RAM', price:'RD$ 30, 000', image:'/src/assets/DesktopNueve.jpg'},
-    {id: 10, name: 'Desktop Dell XPS 8960', description:'Windows 11 pro, core i7, 5.40GHz, 4TB y 64 RAM', price:'RD$ 48, 500', image:'src/assets/desktopDiez.jpg'},
-    {id: 11, name: 'Desktop optiplex 3080', description: 'Core i5, 2.3GHz 512GB Y 16 RAM', price: 'RD$ 42,  900 ', image:'/src/assets/desktopOnce.jpg' },
-    {id: 12, name: 'Desktop Asus ExpertCenter', description:'Windows 11 Pro, core i7, 1TB y 16 RAM', price:'RD$ 48, 380', image:'/src/assets/desktopDoce.jpg'},
-];
 
 // Crear el contexto para el carrito de compras
 const CartContext = createContext();
@@ -138,10 +124,10 @@ const DesktopCard = ({ desktop }) => {
     return (
         <div className="relative border rounded-lg p-4 shadow-md block hover:shadow-lg transition-shadow duration-200">
             <div className="w-full h-32 mb-4 flex items-center justify-center">
-                <img src={desktop.image} alt={desktop.name} className="max-h-full max-w-full object-contain" />
+                <img src={desktop.urlImg} alt={desktop.name} className="max-h-full max-w-full object-contain" />
             </div>
             <h3 className="text-lg font-semibold">{desktop.name}</h3>
-            <p className="text-md font-bold mt-2">{desktop.price}</p>
+            <p className="text-md font-bold mt-2">RD$ {desktop.price.toLocaleString('en-US')}</p>
             <FaShoppingCart className="absolute bottom-4 right-4 text-black text-3xl cursor-pointer" onClick={() => addToCart(desktop)} />
         </div>
     );
@@ -152,20 +138,56 @@ DesktopCard.propTypes = {
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
         price: PropTypes.string.isRequired,
-        image: PropTypes.string.isRequired,
+        urlImg: PropTypes.string.isRequired,
     }).isRequired,
 };
 
 // Componente principal que maneja el estado y renderiza los desktops con el menú lateral
 function Desktops() {
-    const [searchResults, setSearchResults] = useState(desktopData);
+    const [searchResults, setSearchResults] = useState([]);
+    const [initialProducts, setInitialProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        fetch(import.meta.env.VITE_API_PRODUCT_URL) // Cambia la URL por la de tu API
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.isSuccess) {
+                    // Verificar que los productos existan y estén definidos
+                    const allProducts = data.value || [];
+                    const deskProducts = allProducts.filter(product => product.categoryId === 3);                    
+                    setInitialProducts(deskProducts);
+                    setSearchResults(deskProducts);
+                } else {
+                    throw new Error(data.errorMessage);
+                }
+                setLoading(false);
+            })
+            .catch(error => {
+                setError(error);
+                setLoading(false);
+            });
+    }, []);
 
     const handleSearch = (searchTerm) => {
-        const results = desktopData.filter(desktop =>
+        const results = initialProducts.filter(desktop =>
             desktop.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setSearchResults(results);
     };
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
 
     return (
         <CartProvider>

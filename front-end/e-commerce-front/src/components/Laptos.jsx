@@ -159,8 +159,9 @@ function Laptops() {
                 if (data.isSuccess) {
                     // Verificar que los productos existan y estén definidos
                     const allProducts = data.value || [];
-                    setInitialProducts(allProducts);
-                    setSearchResults(allProducts);
+                    const laptopProducts = allProducts.filter(product => product.categoryId === 1);                    
+                    setInitialProducts(laptopProducts);
+                    setSearchResults(laptopProducts);
                 } else {
                     throw new Error(data.errorMessage);
                 }
