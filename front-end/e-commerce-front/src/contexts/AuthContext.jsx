@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect,useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -9,10 +9,13 @@ const MySwal = withReactContent(Swal);
 // Creamos el contexto de autenticación
 const AuthContext = createContext();
 
+const INACTIVITY_TIME =15 * 10 * 1000; //10 seg
+
 // Proveedor de contexto para manejar la autenticación
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const navigate = useNavigate();
+    const timerId = useRef(null);
 
     useEffect(() => {
         // Revisar si hay un usuario en localStorage al montar el componente
@@ -169,7 +172,45 @@ export const AuthProvider = ({ children }) => {
             confirmButtonText: 'OK'
         });
     };
+    // Función para realizar el logout
+    const logoutinactivity = () => {
+        localStorage.removeItem('user');
+        setUser(null);
+        navigate('/login');
+        MySwal.fire({
+            title: 'Sesión cerrada',
+            text: 'Sesion cerrada por inactividad',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+    };
+    const resetTimer = () => {
+        if (timerId.current) {
+            clearTimeout(timerId.current);
+        }
+        timerId.current = setTimeout(() => {
+            if (user) {
+                logoutinactivity();
+            }            
+        }, INACTIVITY_TIME);
+    };
 
+    useEffect(() => {
+        const handleActivity = () => {
+            resetTimer();
+        };
+
+        window.addEventListener('mousemove', handleActivity);
+        window.addEventListener('keydown', handleActivity);
+
+        resetTimer();
+
+        return () => {
+            clearTimeout(timerId.current);
+            window.removeEventListener('mousemove', handleActivity);
+            window.removeEventListener('keydown', handleActivity);
+        };
+    }, [logout, navigate]);
     return (
         <AuthContext.Provider value={{ user, login, logout }}>
             {children}
