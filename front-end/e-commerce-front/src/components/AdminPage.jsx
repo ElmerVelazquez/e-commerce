@@ -7,33 +7,38 @@ import withReactContent from 'sweetalert2-react-content';
 const MySwal = withReactContent(Swal);
 
 function AdminPage() {
-    const { user } = useAuth();
-    const navigate = useNavigate();
-    const [products, setProducts] = useState([]);
-    const [newProduct, setNewProduct] = useState({ name: '', price: '', description: '' });
+    const { user } = useAuth(); // Obtener el usuario autenticado del contexto
+    const navigate = useNavigate(); // Hook para la navegación
+    const [products, setProducts] = useState([]); // Estado para los productos
+    const [newProduct, setNewProduct] = useState({ name: '', price: '', description: '' }); // Estado para el nuevo producto
 
     useEffect(() => {
-        if (!user || user.rol != 'admin') {
+
+      // Redirigir si el usuario no es administrador
+        if (!user || user.rol !== 'admin') {
+
             MySwal.fire({
                 title: 'Acceso Denegado',
                 text: 'No tienes permiso para acceder a esta página',
                 icon: 'error',
                 confirmButtonText: 'OK'
             }).then(() => {
-                navigate('/login');
+                navigate('/login'); // Redirigir a la página de login
             });
         }
     }, [user, navigate]);
 
     useEffect(() => {
-        // Fetch 
+        // Fetch para obtener los productos
         const fetchProducts = async () => {
             try {
                 const response = await fetch(import.meta.env.VITE_API_PRODUCT_URL);
                 const data = await response.json();
+
                 setProducts(data.value);
+
             } catch (error) {
-                console.error('Error fetching products:', error);
+                console.error('Error fetching products:', error); // Manejo de errores
             }
         };
 
@@ -49,7 +54,7 @@ function AdminPage() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(newProduct),
+                body: JSON.stringify(newProduct), // Enviar el nuevo producto en el cuerpo de la solicitud
             });
     
             if (!response.ok) {
@@ -58,10 +63,10 @@ function AdminPage() {
             }
     
             const responseData = await response.json();
-            const addedProduct = responseData.value[0]; // Assuming you only add one product at a time
+            const addedProduct = responseData.value[0]; // Asumiendo que solo se agrega un producto a la vez
     
-            setProducts([...products, addedProduct]);
-            setNewProduct({ name: '', price: '', description: '' });
+            setProducts([...products, addedProduct]); // Actualizar el estado con el nuevo producto
+            setNewProduct({ name: '', price: '', description: '' }); // Limpiar el formulario
     
             MySwal.fire({
                 title: 'Éxito',
@@ -91,7 +96,7 @@ function AdminPage() {
                 throw new Error(errorData.message || 'Error al eliminar producto');
             }
 
-            setProducts(products.filter(product => product.id !== productId));
+            setProducts(products.filter(product => product.id !== productId)); // Actualizar el estado filtrando el producto eliminado
 
             MySwal.fire({
                 title: 'Éxito',
@@ -120,7 +125,7 @@ function AdminPage() {
                     <input
                         type="text"
                         value={newProduct.name}
-                        onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+                        onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })} // Actualizar el nombre del producto
                         className="w-full px-3 py-2 border rounded"
                         required
                     />
@@ -130,7 +135,7 @@ function AdminPage() {
                     <input
                         type="number"
                         value={newProduct.price}
-                        onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
+                        onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })} // Actualizar el precio del producto
                         className="w-full px-3 py-2 border rounded"
                         required
                     />
@@ -139,7 +144,7 @@ function AdminPage() {
                     <label className="block text-gray-700">Descripción</label>
                     <textarea
                         value={newProduct.description}
-                        onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
+                        onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })} // Actualizar la descripción del producto
                         className="w-full px-3 py-2 border rounded"
                         required
                     />
@@ -158,7 +163,7 @@ function AdminPage() {
                             <p className="text-gray-700">${product.price}</p>
                         </div>
                         <button
-                            onClick={() => handleDeleteProduct(product.id)}
+                            onClick={() => handleDeleteProduct(product.id)} // Eliminar producto
                             className="bg-red-500 text-white px-4 py-2 rounded"
                         >
                             Eliminar
