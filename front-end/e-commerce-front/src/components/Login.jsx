@@ -3,6 +3,7 @@ import { AiOutlineUser, AiOutlineLock, AiFillEye, AiOutlineEyeInvisible } from '
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const MySwal = withReactContent(Swal);
 
@@ -12,52 +13,13 @@ function Login() {
     const [showPassword, setShowPassword] = useState(false); // Estado para mostrar u ocultar contraseña
     const [error, setError] = useState('');
     const navigate = useNavigate();
+    const { login } = useAuth(); // Usa el hook useAuth para obtener la función login
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const loginUrl = import.meta.env.VITE_API_LOGIN_URL;
-
-        if (!loginUrl) {
-            setError('URL de login no definida');
-            console.error('VITE_API_LOGIN_URL no está definida en el archivo .env');
-            return;
-        }
-
         try {
-            const response = await fetch(loginUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email, password }),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                MySwal.fire({
-                    title: 'Error',
-                    text: data.errorMessage || 'Error al iniciar sesión',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-                return;
-            }
-
-            // Guardar el rol en localStorage
-            localStorage.setItem('userRole', data.rol);
-
-            // Redirigir según el rol del usuario            
-            if (data.rol == "admin") {
-                navigate('/adminpage'); // Redirige al admin a la página AdminPage
-    
-            } else {
-                
-                navigate('/'); // Redirige al usuario regular al home
-            }
-
-            setError('');
+            await login(email, password); // Llama a la función login del contexto de autenticación
         } catch (err) {
             setError('Error al realizar la solicitud');
             MySwal.fire({

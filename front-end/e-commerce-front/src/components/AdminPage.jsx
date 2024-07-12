@@ -13,7 +13,7 @@ function AdminPage() {
     const [newProduct, setNewProduct] = useState({ name: '', price: '', description: '' });
 
     useEffect(() => {
-        if (!user || user.rol !== 'admin') {
+        if (!user || user.rol != 'admin') {
             MySwal.fire({
                 title: 'Acceso Denegado',
                 text: 'No tienes permiso para acceder a esta página',
@@ -31,7 +31,7 @@ function AdminPage() {
             try {
                 const response = await fetch(import.meta.env.VITE_API_PRODUCT_URL);
                 const data = await response.json();
-                setProducts(data);
+                setProducts(data.value);
             } catch (error) {
                 console.error('Error fetching products:', error);
             }
