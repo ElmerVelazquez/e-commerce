@@ -13,8 +13,10 @@ function AdminPage() {
     const [newProduct, setNewProduct] = useState({ name: '', price: '', description: '' }); // Estado para el nuevo producto
 
     useEffect(() => {
-        // Redirigir si el usuario no es administrador
+
+      // Redirigir si el usuario no es administrador
         if (!user || user.rol !== 'admin') {
+
             MySwal.fire({
                 title: 'Acceso Denegado',
                 text: 'No tienes permiso para acceder a esta página',
@@ -32,7 +34,9 @@ function AdminPage() {
             try {
                 const response = await fetch(import.meta.env.VITE_API_PRODUCT_URL);
                 const data = await response.json();
-                setProducts(data); // Actualizar el estado con los productos obtenidos
+
+                setProducts(data.value);
+
             } catch (error) {
                 console.error('Error fetching products:', error); // Manejo de errores
             }
