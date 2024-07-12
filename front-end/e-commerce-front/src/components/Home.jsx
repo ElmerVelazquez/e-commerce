@@ -193,7 +193,8 @@ function Home() {
           </section>
         </>
       )}
-      <Footer /> {/* Añadir el Footer aquí */}
+      {/*Sección footer*/}
+      <Footer /> 
     </>
   );
 }

@@ -66,7 +66,7 @@ function AdminPage() {
             const addedProduct = responseData.value[0]; // Asumiendo que solo se agrega un producto a la vez
     
             setProducts([...products, addedProduct]); // Actualizar el estado con el nuevo producto
-            setNewProduct({ name: '', price: '', description: '' }); // Limpiar el formulario
+            setNewProduct({ name: '', description: '', price: '', stock: '', img: '' }); // Limpiar el formulario
     
             MySwal.fire({
                 title: 'Éxito',
@@ -117,9 +117,10 @@ function AdminPage() {
 
     return (
         <div className="container mx-auto p-8">
-            <h1 className="text-2xl font-bold mb-4">Admin Page</h1>
+            <h1 className="text-2xl font-bold mb-4">Página del administrador</h1>
             <form onSubmit={handleAddProduct} className="mb-4">
                 <h2 className="text-xl font-bold mb-2">Agregar nuevos productos</h2>
+                {/* Sección del nombre de oroducto */}
                 <div className="mb-2">
                     <label className="block text-gray-700">Nombre del producto</label>
                     <input
@@ -130,6 +131,17 @@ function AdminPage() {
                         required
                     />
                 </div>
+                {/* Sección de descripcion */}
+                <div className="mb-2">
+                    <label className="block text-gray-700">Descripción</label>
+                    <textarea
+                        value={newProduct.description}
+                        onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })} // Actualizar la descripción del producto
+                        className="w-full px-3 py-2 border rounded"
+                        required
+                    />
+                </div>
+                {/* Sección de precio */}
                 <div className="mb-2">
                     <label className="block text-gray-700">Precio</label>
                     <input
@@ -140,16 +152,32 @@ function AdminPage() {
                         required
                     />
                 </div>
+                {/* Sección de stock */}
                 <div className="mb-2">
-                    <label className="block text-gray-700">Descripción</label>
-                    <textarea
-                        value={newProduct.description}
-                        onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })} // Actualizar la descripción del producto
+                    <label className="block text-gray-700">Stock</label>
+                    <input
+                        type="number"
+                        value={newProduct.stock}
+                        onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })} // Actualizar el precio del producto
                         className="w-full px-3 py-2 border rounded"
                         required
                     />
                 </div>
-                <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+
+                 {/* Sección de img*/}
+                 <div className="mb-2">
+                    <label className="block text-gray-700">Url img</label>
+                    <input
+                        type="text"
+                        value={newProduct.img}
+                        onChange={(e) => setNewProduct({ ...newProduct, img: e.target.value })} // Actualizar el nombre del producto
+                        className="w-full px-3 py-2 border rounded"
+                        required
+                    />
+                </div>
+                
+
+                <button type="submit" className="bg-red-500 text-white px-4 py-2 rounded">
                     Agregar productos
                 </button>
             </form>
