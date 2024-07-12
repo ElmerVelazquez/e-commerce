@@ -70,7 +70,7 @@ namespace E_Commerce.Controllers
             new Claim(ClaimTypes.Name, user.Email),
             new Claim(ClaimTypes.Role, user.Rol)
                 }),
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = DateTime.UtcNow.AddMinutes(15),
                 Issuer = _configuration["jwtSettings:Issuer"],
                 Audience = _configuration["jwtSettings:Audience"],
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
