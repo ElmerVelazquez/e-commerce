@@ -6,17 +6,25 @@ import withReactContent from 'sweetalert2-react-content';
 
 const MySwal = withReactContent(Swal);
 
+// Mapeo de categoryId a nombres de categorías
+const categories = {
+    1: 'Laptops',
+    2: 'Teléfonos',
+    3: 'Desktops',
+    4: 'Accesorios'
+};
+
 function AdminPage() {
     const { user } = useAuth(); // Obtener el usuario autenticado del contexto
     const navigate = useNavigate(); // Hook para la navegación
     const [products, setProducts] = useState([]); // Estado para los productos
-    const [newProduct, setNewProduct] = useState({ name: '', price: 0, description: '', stock: 0, urlImg: '', category: '' }); // Estado para el nuevo producto
+    const [newProduct, setNewProduct] = useState({ name: '', price: 0, description: '', stock: 0, urlImg: '', categoryId: '' }); // Estado para el nuevo producto
+    const [currentPage, setCurrentPage] = useState(1); // Estado para la página actual de paginación
+    const productsPerPage = 9; // Número de productos por página
 
+    // useEffect para redirigir si el usuario no es administrador
     useEffect(() => {
-
-      // Redirigir si el usuario no es administrador
         if (!user || user.rol !== 'admin') {
-
             MySwal.fire({
                 title: 'Acceso Denegado',
                 text: 'No tienes permiso para acceder a esta página',
@@ -28,23 +36,22 @@ function AdminPage() {
         }
     }, [user, navigate]);
 
+    // useEffect para obtener los productos desde la API
     useEffect(() => {
-        // Fetch para obtener los productos
         const fetchProducts = async () => {
             try {
                 const response = await fetch(import.meta.env.VITE_API_PRODUCT_URL);
                 const data = await response.json();
-
-                setProducts(data.value);
-
+                // Ordenar los productos por fecha de creación (más recientes primero)
+                setProducts(data.value.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
             } catch (error) {
                 console.error('Error fetching products:', error); // Manejo de errores
             }
         };
-
         fetchProducts();
     }, []);
 
+    // Manejo de la adición de nuevos productos
     const handleAddProduct = async (e) => {
         e.preventDefault();
     
@@ -56,7 +63,6 @@ function AdminPage() {
                     'Authorization': 'bearer ' + user.token,
                 },
                 body: JSON.stringify(newProduct), // Enviar el nuevo producto en el cuerpo de la solicitud
-                
             });
             
             if (!response.ok) {
@@ -67,18 +73,15 @@ function AdminPage() {
             const responseData = await response.json();
             const addedProduct = responseData.value; // Asumiendo que solo se agrega un producto a la vez
     
-            setProducts([...products, addedProduct]); // Actualizar el estado con el nuevo producto
-            setNewProduct({ name: '', description: '', price: 0, stock: 0, urlImg: '', category: '' }); // Limpiar el formulario
-            console.log(addedProduct) 
-            console.log(products) 
+            setProducts([addedProduct, ...products]); // Actualizar el estado con el nuevo producto
+            setNewProduct({ name: '', description: '', price: 0, stock: 0, urlImg: '', categoryId: '' }); // Limpiar el formulario
+            
             MySwal.fire({
                 title: 'Éxito',
                 text: 'Producto añadido con éxito',
                 icon: 'success',
                 confirmButtonText: 'OK'
-                
             });
-
         } catch (error) {
             console.error('Error agregando productos:', error);
             MySwal.fire({
@@ -90,6 +93,7 @@ function AdminPage() {
         }
     };
     
+    // Manejo de la eliminación de productos
     const handleDeleteProduct = async (productId) => {
         try {
             const response = await fetch(`${import.meta.env.VITE_API_PRODUCT_URL}/${productId}`, {
@@ -124,6 +128,14 @@ function AdminPage() {
         }
     };
 
+    // Paginación: determinar el índice de los productos a mostrar en la página actual
+    const indexOfLastProduct = currentPage * productsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+    const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+
+    // Función para cambiar de página
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
     return (
         <div className="container mx-auto p-8">
             <h1 className="text-2xl font-bold mb-4">Página del administrador</h1>
@@ -135,7 +147,7 @@ function AdminPage() {
                     <input
                         type="text"
                         value={newProduct.name}
-                        onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })} // Actualizar el nombre del producto
+                        onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
                         className="w-full px-3 py-2 border rounded"
                         required
                     />
@@ -145,7 +157,7 @@ function AdminPage() {
                     <label className="block text-gray-700">Descripción</label>
                     <textarea
                         value={newProduct.description}
-                        onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })} // Actualizar la descripción del producto
+                        onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
                         className="w-full px-3 py-2 border rounded"
                         required
                     />
@@ -156,7 +168,7 @@ function AdminPage() {
                     <input
                         type="number"
                         value={newProduct.price}
-                        onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })} // Actualizar el precio del producto
+                        onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
                         className="w-full px-3 py-2 border rounded"
                         required
                     />
@@ -167,63 +179,72 @@ function AdminPage() {
                     <input
                         type="number"
                         value={newProduct.stock}
-                        onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })} // Actualizar el stock del producto
+                        onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })}
                         className="w-full px-3 py-2 border rounded"
                         required
                     />
                 </div>
-
-                {/* Sección de img */}
+                {/* Sección de URL de imagen */}
                 <div className="mb-2">
                     <label className="block text-gray-700">Url img</label>
                     <input
                         type="text"
                         value={newProduct.urlImg}
-                        onChange={(e) => setNewProduct({ ...newProduct, urlImg: e.target.value })} // Actualizar la URL de la imagen del producto
+                        onChange={(e) => setNewProduct({ ...newProduct, urlImg: e.target.value })}
                         className="w-full px-3 py-2 border rounded"
                         required
                     />
                 </div>
-
-                {/* Sección del select */}
+                {/* Sección de selección de categoría */}
                 <div className="mb-2">
                     <label className="block text-gray-700">Categoría</label>
                     <select
-                        value={newProduct.category}
-                        onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })} // Actualizar la categoría del producto
+                        value={newProduct.categoryId}
+                        onChange={(e) => setNewProduct({ ...newProduct, categoryId: e.target.value })} 
                         className="w-full px-3 py-2 border rounded"
                         required
                     >
                         <option value="">Selecciona una categoría</option>
-                        <option value="Laptops">Laptops</option>
-                        <option value="Telefono">Teléfonos</option>
-                        <option value="Desktops">Desktops</option>
-                        <option value="Accesorios">Accesorios</option>
+                        <option value="1">Laptops</option>
+                        <option value="2">Teléfonos</option>
+                        <option value="3">Desktops</option>
+                        <option value="4">Accesorios</option>
                     </select>
                 </div>
-
                 <button type="submit" className="bg-red-500 text-white px-4 py-2 rounded">
                     Agregar productos
                 </button>
             </form>
             <h2 className="text-xl font-bold mb-2">Productos</h2>
-            <ul>
-                {products.map(product => (
-                    <li key={product.id} className="mb-2 flex justify-between items-center">
-                        <div>
-                            <h3 className="text-lg font-bold">{product.name}</h3>
-                            <p className="text-gray-700">{product.description}</p>
-                            <p className="text-gray-700">${product.price}</p>
-                        </div>
+            {/* Grid de productos */}
+            <div className="grid grid-cols-3 gap-4">
+                {currentProducts.map(product => (
+                    <div key={product.id} className="border p-4 rounded">
+                        <h3 className="text-lg font-bold">{product.name}</h3>
+                        <p className="text-gray-700">{product.description}</p>
+                        <p className="text-gray-700">${product.price}</p>
+                        <p className="text-gray-700">Categoría: {categories[product.categoryId]}</p>
                         <button
-                            onClick={() => handleDeleteProduct(product.id)} // Eliminar producto
-                            className="bg-red-500 text-white px-4 py-2 rounded"
+                            onClick={() => handleDeleteProduct(product.id)}
+                            className="bg-red-500 text-white px-4 py-2 rounded mt-2"
                         >
                             Eliminar
                         </button>
-                    </li>
+                    </div>
                 ))}
-            </ul>
+            </div>
+            {/* Paginación */}
+            <div className="flex justify-center mt-4">
+                {Array.from({ length: Math.ceil(products.length / productsPerPage) }, (_, index) => (
+                    <button
+                        key={index + 1}
+                        onClick={() => paginate(index + 1)}
+                        className={`px-4 py-2 mx-1 ${currentPage === index + 1 ? 'bg-red-500 text-white' : 'bg-gray-300'}`}
+                    >
+                        {index + 1}
+                    </button>
+                ))}
+            </div>
         </div>
     );
 }
