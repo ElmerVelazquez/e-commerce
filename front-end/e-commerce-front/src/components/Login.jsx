@@ -112,7 +112,7 @@ function Login() {
                     </form>
                     {/* Enlace para recuperar contraseña */}
                     <div className="text-center">
-                        <a href="#" className="text-black">¿Olvidaste tu contraseña?</a>
+                        <a href="enviarcodigo" className="text-black">¿Olvidaste tu contraseña?</a>
                     </div>
                 </div>
             </div>

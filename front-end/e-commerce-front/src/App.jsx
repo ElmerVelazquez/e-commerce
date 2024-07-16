@@ -12,6 +12,8 @@ import CartPage from './components/CartPage';
 import AdminPage from './components/AdminPage';
 import { CardContextProvider } from './components/CardContext';
 import { AuthProvider } from './contexts/AuthContext'; // Importa el proveedor de AuthContext
+import OlvidarContrasena from './components/OlvidarContrasena';
+import EnviarCodigo from './components/EnviarCodigo';
 
 function App() {
     return (
@@ -29,6 +31,8 @@ function App() {
                             <Route path='/desktop' element={<Desktop />} />
                             <Route path='/cart' element={<CartPage />} />
                             <Route path='/adminpage' element={<AdminPage />} />
+                            <Route path='/olvidarcontrasena' element={< OlvidarContrasena />} />
+                            <Route path='/enviarcodigo' element={<EnviarCodigo />} />
                         </Routes>
                     </CardContextProvider>
                 </AuthProvider>
