@@ -1,6 +1,7 @@
 ﻿using E_Commerce.Interfaces;
 using E_Commerce.Models;
 using E_Commerce.Repository;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace E_Commerce.Utilities
 {
@@ -18,8 +19,10 @@ namespace E_Commerce.Utilities
             services.AddScoped<IBaseRepository<Category>, BaseRepository<Category>>();
             services.AddScoped<IBaseRepository<Address>, BaseRepository<Address>>();
             services.AddScoped<IBaseRepository<CartItem>, BaseRepository<CartItem>>();
-           
-            
+
+            services.AddTransient<IEmailSenderRepository, EmailSenderRepository>();
+
+
 
         }
     }

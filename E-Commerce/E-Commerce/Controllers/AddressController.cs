@@ -2,11 +2,13 @@
 using E_Commerce.Interfaces;
 using E_Commerce.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_Commerce.Controllers //falta validar que las foreign keys coincidan con una real 
 {
+    [EnableCors("AllowOrigin")]
     [Route("api/addresses")]
     [ApiController]
     public class AddressController : ControllerBase

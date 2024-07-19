@@ -4,10 +4,11 @@ using E_Commerce.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Cors;
 
 namespace E_Commerce.Controllers
 {
-    
+    [EnableCors("AllowOrigin")]
     [Route("api/orders")]
     [ApiController]   
     public class OrderController : ControllerBase
