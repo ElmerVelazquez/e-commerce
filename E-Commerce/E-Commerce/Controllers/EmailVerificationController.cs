@@ -20,8 +20,8 @@ namespace E_Commerce.Controllers
             _repo = repo;
         }
         [AllowAnonymous]
-        [HttpPost("/sendcode")]
-        public async Task<IActionResult> Send(string email)
+        [HttpPost("sendcode")]
+        public async Task<IActionResult> Send([FromBody]string email)
         {
             string codigo = _repo.SaveVerificationCode(email).Result.Value;
             if (codigo == null) return BadRequest(Result.Fail("Email no encontrado"));
@@ -75,7 +75,7 @@ namespace E_Commerce.Controllers
             
         }
         [AllowAnonymous]
-        [HttpPost("/compare/{code}")]
+        [HttpPost("checkcode/{code}")]
         public async Task<IActionResult> Compare([FromBody] string email,string code)
         {
             var respons = await _repo.CompareVerificationCode(email,code);
@@ -89,7 +89,7 @@ namespace E_Commerce.Controllers
         }
 
         [AllowAnonymous]
-         [HttpPost("/PasswordRecovery/{email}&{code}")]
+         [HttpPost("passwordrecovery/{email}&{code}")]
         public async Task<IActionResult> PasswordRecovery(string email, string code, [FromBody] string newPassword)
         {
             var respons = await _repo.PasswordRecovery(email, code, newPassword);
