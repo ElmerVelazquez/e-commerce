@@ -1,26 +1,25 @@
 import React, { useState } from 'react';
-import { AiOutlineMail } from 'react-icons/ai';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useNavigate } from 'react-router-dom';
 
 const MySwal = withReactContent(Swal);
 
-function EnviarCodigo() {
-    const [email, setEmail] = useState('');
+function ConfirmarCodigo() {
+    const [codigo, setCodigo] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        
+
         MySwal.fire({
             title: 'Éxito',
-            text: 'Se ha enviado un código a tu correo',
+            text: 'Código verificado correctamente',
             icon: 'success',
             confirmButtonText: 'OK'
         }).then(() => {
-            // Redirige al usuario a la página de restablecer contraseña después de enviar el código
-            navigate('/confirmarcodigo');
+            // Redirige al usuario a la página de restablecer contraseña después de verificar el código
+            navigate('/olvidarcontrasena');
         });
     };
 
@@ -36,29 +35,28 @@ function EnviarCodigo() {
                 </h2>
             </div>
 
-            {/* Sección principal de la página de enviar código */}
+            {/* Sección principal de la página de confirmar código */}
             <div className="flex justify-center items-center h-screen bg-gray-100">
                 <div className="bg-white p-8 shadow-md rounded w-96">
-                    <h2 className="text-2xl font-bold mb-2 text-center">Ayuda con la contraseña</h2>
+                    <h2 className="text-2xl font-bold mb-2 text-center">Confirmar Código</h2>
                     <p className="mb-6 text-center text-gray-600">
-                        Por favor, introduce tu correo electrónico para recibir un código de verificación y restablecer tu contraseña.
+                        Por favor, introduce el código que has recibido en tu correo electrónico.
                     </p>
                     <form onSubmit={handleSubmit}>
-                        {/* Campo de entrada para el correo electrónico */}
+                        {/* Campo de entrada para el código */}
                         <div className="mb-4 flex items-center">
-                            <label htmlFor="email" className="block text-gray-700">
-                                <AiOutlineMail className="text-gray-600 text-xl" />
+                            <label htmlFor="codigo" className="block text-gray-700">
                             </label>
                             <input
-                                type="email"
-                                id="email"
-                                name="email"
-                                placeholder="Escribe tu correo"
+                                type="number"
+                                id="codigo"
+                                name="codigo"
+                                placeholder="Escribe el código"
                                 className="w-full px-3 py-2 ml-2 border rounded"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                value={codigo}
+                                onChange={(e) => setCodigo(e.target.value)}
                                 required
-                                aria-label="Correo Electrónico"
+                                aria-label="Código de Verificación"
                             />
                         </div>
                         {/* Botón de envío del formulario */}
@@ -67,7 +65,7 @@ function EnviarCodigo() {
                                 type="submit"
                                 className="w-full bg-red-500 text-white py-2 rounded hover:bg-black"
                             >
-                                Enviar correo
+                                Confirmar Código
                             </button>
                         </div>
                     </form>
@@ -77,4 +75,4 @@ function EnviarCodigo() {
     );
 }
 
-export default EnviarCodigo;
+export default ConfirmarCodigo;
