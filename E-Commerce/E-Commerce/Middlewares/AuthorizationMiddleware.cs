@@ -1,10 +1,12 @@
 ﻿using E_Commerce.DTO;
 using E_Commerce.Models;
+using E_Commerce.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace E_Commerce.Middlewares
 {
@@ -20,13 +22,13 @@ namespace E_Commerce.Middlewares
 
         public async Task InvokeAsync(HttpContext context)
         {
-
+            
             if (context.User.Identity.IsAuthenticated)
             {
                 var userid = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
                 var routeId = context.Request.RouteValues["id"]?.ToString();
-
+                
                 var EndpointsUser = new[] {
                     $"/api/users/{routeId}"};
                 var EndpointsResource = new[] {
@@ -36,16 +38,13 @@ namespace E_Commerce.Middlewares
                 var EndpointsSubResource = new[] {
                     $"/api/cartitems/{routeId}",
                     $"/api/orderdetails/{routeId}"};
-
-
-
+                
                 var requestPath = context.Request.Path.Value?.ToLower();
-
                 if (context.User.IsInRole("admin") || routeId == null)
                 {
                     await _next(context);
                     return;
-                }
+                }                
                 if (EndpointsUser.Contains(requestPath) & userid == routeId)
                 {
                     await _next(context);
@@ -117,7 +116,7 @@ namespace E_Commerce.Middlewares
                 }
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;
                 context.Response.ContentType = "text/plain";
-                await context.Response.WriteAsync("Acceso denegado.");
+                await context.Response.WriteAsync(JsonSerializer.Serialize(Result.Fail("Acceso denegado")));
                 return;
             }
 

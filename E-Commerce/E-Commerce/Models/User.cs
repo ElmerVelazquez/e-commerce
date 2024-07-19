@@ -23,6 +23,8 @@ public partial class User: InterfaceId
 
     public string Rol { get; set; } = "regular";
     public DateTime? RegistrationDate { get; set; }
+    public bool? verified { get; set; } = false;
+    public string? verificationCode { get; set; }
     public virtual Password? Password { get; set; }
     public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
 

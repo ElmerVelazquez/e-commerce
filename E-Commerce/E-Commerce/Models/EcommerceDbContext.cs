@@ -217,6 +217,8 @@ public partial class EcommerceDbContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("registration_date");
+            entity.Property(e => e.verificationCode)
+                .HasMaxLength(15);
 
             entity.HasOne(e => e.Password).WithOne(e => e.User)
             .HasForeignKey<Password>(p => p.UserId);
