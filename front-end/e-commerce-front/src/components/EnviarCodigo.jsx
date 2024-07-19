@@ -12,7 +12,7 @@ function EnviarCodigo() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // Aquí deberías agregar la lógica para enviar el código al correo
+        
         MySwal.fire({
             title: 'Éxito',
             text: 'Se ha enviado un código a tu correo',
@@ -20,7 +20,7 @@ function EnviarCodigo() {
             confirmButtonText: 'OK'
         }).then(() => {
             // Redirige al usuario a la página de restablecer contraseña después de enviar el código
-            navigate('/olvidar-contraseña');
+            navigate('/olvidarcontrasena');
         });
     };
 
