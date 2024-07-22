@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useContext, createContext } from 'react';
 import PropTypes from 'prop-types';
 import { FaShoppingCart, FaUser, FaTrash } from 'react-icons/fa';
+import Sidebar from './Sidebar';
 
 // Crear el contexto para el carrito de compras
 const CartContext = createContext();
@@ -57,7 +58,6 @@ const Navbar = ({ onSearch }) => {
         };
     }, []);
 
-    // Sección del Navbar
     return (
         <div className="flex bg-red-600 p-8 justify-between items-center">
             <h1 className="text-white text-2xl font-bold">
@@ -123,11 +123,10 @@ const LaptopCard = ({ laptop }) => {
     return (
         <div className="relative border rounded-lg p-4 shadow-md block hover:shadow-lg transition-shadow duration-200">
             <div className="w-full h-32 mb-4 flex items-center justify-center">
-                <img src={laptop.urlImg} alt={laptop.name} className="max-h-full max-w-full object-contain" />
+                <img src={laptop.image} alt={laptop.name} className="max-h-full max-w-full object-contain" />
             </div>
             <h3 className="text-lg font-semibold">{laptop.name}</h3>
             <p className="text-md font-bold mt-2">RD$ {laptop.price.toLocaleString('en-US')}</p>
-            <p className="text-sm mt-2">{laptop.description}</p> {/* Agregar descripción */}
             <FaShoppingCart className="absolute bottom-4 right-4 text-black text-3xl cursor-pointer" onClick={() => addToCart(laptop)} />
         </div>
     );
@@ -137,18 +136,19 @@ LaptopCard.propTypes = {
     laptop: PropTypes.shape({
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
-        description: PropTypes.string.isRequired, // Asegurarse de incluir description
-        price: PropTypes.number.isRequired,
-        urlImg: PropTypes.string.isRequired,
+        price: PropTypes.string.isRequired,
+        image: PropTypes.string.isRequired,
     }).isRequired,
 };
 
 // Componente principal que maneja el estado y renderiza las laptops con el menú lateral
-function Laptops() {
-    const [initialProducts, setInitialProducts] = useState([]);
+function Laptos() {
     const [searchResults, setSearchResults] = useState([]);
+    const [initialProducts, setInitialProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const productsPerPage = 9;
 
     useEffect(() => {
         fetch(import.meta.env.VITE_API_PRODUCT_URL) // Cambia la URL por la de tu API
@@ -162,7 +162,7 @@ function Laptops() {
                 if (data.isSuccess) {
                     // Verificar que los productos existan y estén definidos
                     const allProducts = data.value || [];
-                    const laptopProducts = allProducts.filter(product => product.categoryId === 1);                    
+                    const laptopProducts = allProducts.filter(product => product.categoryId === 1);
                     setInitialProducts(laptopProducts);
                     setSearchResults(laptopProducts);
                 } else {
@@ -181,34 +181,52 @@ function Laptops() {
             laptop.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setSearchResults(results);
+        setCurrentPage(1); // Resetear a la primera página al buscar
     };
+
+    const indexOfLastProduct = currentPage * productsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+    const currentProducts = searchResults.slice(indexOfFirstProduct, indexOfLastProduct);
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     if (loading) {
         return <div>Loading...</div>;
     }
 
     if (error) {
-        return <div>Error: {error}</div>;
+        return <div>Error: {error.message}</div>;
     }
+
     return (
         <CartProvider>
             <Navbar onSearch={handleSearch} />
             <div className="flex">
-                <div className="w-1/5 p-4 bg-gray-100">
-                    <h2 className="text-xl font-bold mb-4">Productos</h2>
-                    <ul className='font-bold'>
-                        <li className="mb-2"><a href="/Accesorios" className="text-gray-700 hover:text-black">Accesorios</a></li>
-                        <li className="mb-2"><a href="/Desktop" className="text-gray-700 hover:text-black">Desktops</a></li>
-                        <li className="mb-2"><a href="/Laptos" className="text-gray-700 hover:text-black">Laptops</a></li>
-                        <li className="mb-2"><a href="/telefono" className="text-gray-700 hover:text-black">Teléfonos</a></li>
-                    </ul>
+                <div className="w-64">
+                    <Sidebar />
                 </div>
-                <div className="w-4/5 p-8">
+                <div className="flex-1 p-8">
                     <h2 className="text-2xl font-bold mb-4">Laptops</h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        {searchResults.map(laptop => (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                        {currentProducts.map(laptop => (
                             <LaptopCard key={laptop.id} laptop={laptop} />
                         ))}
+                    </div>
+                    <div className="flex justify-center mt-8">
+                        <nav>
+                            <ul className="pagination flex">
+                                {Array.from({ length: Math.ceil(searchResults.length / productsPerPage) }, (_, i) => (
+                                    <li key={i} className="mx-1">
+                                        <button
+                                            onClick={() => paginate(i + 1)}
+                                            className={`px-3 py-1 rounded ${currentPage === i + 1 ? 'bg-red-600 text-white' : 'bg-gray-200'}`}
+                                        >
+                                            {i + 1}
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -216,4 +234,4 @@ function Laptops() {
     );
 }
 
-export default Laptops;
+export default Laptos;

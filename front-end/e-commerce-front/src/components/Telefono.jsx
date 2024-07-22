@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useContext, createContext } from 'react';
 import PropTypes from 'prop-types';
 import { FaShoppingCart, FaUser, FaTrash } from 'react-icons/fa';
+import Sidebar from './Sidebar';
 import Buscador from './Buscador';
 
 // Crear el contexto para el carrito de compras
@@ -105,6 +106,8 @@ function Telefono() {
     const [initialProducts, setInitialProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const productsPerPage = 9; // Máximo 9 productos por página
 
     useEffect(() => {
         fetch(import.meta.env.VITE_API_PRODUCT_URL) // Cambia la URL por la de tu API
@@ -138,35 +141,58 @@ function Telefono() {
             telefono.description.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setSearchResults(results);
+        setCurrentPage(1); // Resetear a la primera página en cada búsqueda
     };
+
+    const paginate = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    // Obtener los productos actuales
+    const indexOfLastProduct = currentPage * productsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+    const currentProducts = searchResults.slice(indexOfFirstProduct, indexOfLastProduct);
+
     if (loading) {
         return <div>Loading...</div>;
     }
 
     if (error) {
-        return <div>Error: {error}</div>;
+        return <div>Error: {error.message}</div>; // Mostrar el mensaje de error
     }
 
     return (
         <CartProvider>
             <Navbar onSearch={handleSearch} />
             <div className="flex">
-                <div className="w-1/5 p-4 bg-gray-100">
-                    <h2 className="text-xl font-bold mb-4">Productos</h2>
-                    <ul className='font-bold'>
-                        <li className="mb-2"><a href="/Accesorios" className="text-gray-700 hover:text-black">Accesorios</a></li>
-                        <li className="mb-2"><a href="/Desktop" className="text-gray-700 hover:text-black">Desktops</a></li>
-                        <li className="mb-2"><a href="/Laptos" className="text-gray-700 hover:text-black">Laptops</a></li>
-                        <li className="mb-2"><a href="/telefono" className="text-gray-700 hover:text-black">Teléfonos</a></li>
-                    </ul>
+                <div className="w-64">
+                    <Sidebar />
                 </div>
-                <div className="w-4/5 p-8">
+                <div className="flex-1 p-8">
                     <h2 className="text-2xl font-bold mb-4">Teléfonos</h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        {searchResults.map(telefono => (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+                        {currentProducts.map(telefono => (
                             <TelefonoCard key={telefono.id} telefono={telefono} />
                         ))}
                     </div>
+                    {searchResults.length > productsPerPage && (
+                        <div className="flex justify-center mt-8">
+                            <nav>
+                                <ul className="pagination flex">
+                                    {Array.from({ length: Math.ceil(searchResults.length / productsPerPage) }, (_, i) => (
+                                        <li key={i} className="page-item mx-1">
+                                            <button
+                                                onClick={() => paginate(i + 1)}
+                                                className={`px-4 py-2 border rounded ${currentPage === i + 1 ? 'bg-red-600 text-white' : 'bg-white text-red-600'}`}
+                                            >
+                                                {i + 1}
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </nav>
+                        </div>
+                    )}
                 </div>
             </div>
         </CartProvider>
