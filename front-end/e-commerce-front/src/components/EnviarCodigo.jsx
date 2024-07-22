@@ -11,6 +11,7 @@ function EnviarCodigo() {
     const navigate = useNavigate();
     const urlsendcode = import.meta.env.VITE_API_SENDCODE_URL; 
 
+    
     const handleSubmit = async (event) => {
         event.preventDefault();
         // Aquí deberías agregar la lógica para enviar el código al correo

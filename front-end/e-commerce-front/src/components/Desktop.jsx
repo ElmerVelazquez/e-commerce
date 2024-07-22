@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect, useContext, createContext } from 'react';
 import PropTypes from 'prop-types';
 import { FaShoppingCart, FaUser, FaTrash } from 'react-icons/fa';
-
-// Datos de los desktops
+import Sidebar from './Sidebar';
 
 // Crear el contexto para el carrito de compras
 const CartContext = createContext();
@@ -148,6 +147,8 @@ function Desktops() {
     const [initialProducts, setInitialProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const productsPerPage = 9;
 
     useEffect(() => {
         fetch(import.meta.env.VITE_API_PRODUCT_URL) // Cambia la URL por la de tu API
@@ -180,7 +181,15 @@ function Desktops() {
             desktop.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setSearchResults(results);
+        setCurrentPage(1); // Resetear a la primera página al buscar
     };
+
+    const indexOfLastProduct = currentPage * productsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+    const currentProducts = searchResults.slice(indexOfFirstProduct, indexOfLastProduct);
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -193,26 +202,54 @@ function Desktops() {
         <CartProvider>
             <Navbar onSearch={handleSearch} />
             <div className="flex">
-                <div className="w-1/5 p-4 bg-gray-100">
-                    <h2 className="text-xl font-bold mb-4">Productos</h2>
-                    <ul className='font-bold'>
-                        <li className="mb-2"><a href="/Accesorios" className="text-gray-700 hover:text-black">Accesorios</a></li>
-                        <li className="mb-2"><a href="/Desktop" className="text-gray-700 hover:text-black">Desktops</a></li>
-                        <li className="mb-2"><a href="/Laptos" className="text-gray-700 hover:text-black">Laptops</a></li>
-                        <li className="mb-2"><a href="/telefono" className="text-gray-700 hover:text-black">Teléfonos</a></li>
-                    </ul>
+                <div className="w-64">
+                    <Sidebar />
                 </div>
-                <div className="w-4/5 p-8">
+                <div className="flex-1 p-8">
                     <h2 className="text-2xl font-bold mb-4">Desktops</h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        {searchResults.map(desktop => (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+                        {currentProducts.map(desktop => (
                             <DesktopCard key={desktop.id} desktop={desktop} />
                         ))}
                     </div>
+                    <Pagination
+                        productsPerPage={productsPerPage}
+                        totalProducts={searchResults.length}
+                        paginate={paginate}
+                        currentPage={currentPage}
+                    />
                 </div>
             </div>
         </CartProvider>
     );
 }
+
+// Componente de paginación
+const Pagination = ({ productsPerPage, totalProducts, paginate, currentPage }) => {
+    const pageNumbers = [];
+
+    for (let i = 1; i <= Math.ceil(totalProducts / productsPerPage); i++) {
+        pageNumbers.push(i);
+    }
+
+    return (
+        <nav className="mt-4">
+            <ul className="flex justify-center space-x-2">
+                {pageNumbers.map(number => (
+                    <li key={number} className={`cursor-pointer ${currentPage === number ? 'text-red-500 font-bold' : 'text-gray-500'}`}>
+                        <a onClick={() => paginate(number)}>{number}</a>
+                    </li>
+                ))}
+            </ul>
+        </nav>
+    );
+};
+
+Pagination.propTypes = {
+    productsPerPage: PropTypes.number.isRequired,
+    totalProducts: PropTypes.number.isRequired,
+    paginate: PropTypes.func.isRequired,
+    currentPage: PropTypes.number.isRequired,
+};
 
 export default Desktops;

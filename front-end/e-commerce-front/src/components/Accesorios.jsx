@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useContext, createContext } from 'react';
 import PropTypes from 'prop-types';
 import { FaShoppingCart, FaUser, FaTrash } from 'react-icons/fa';
+import Sidebar from './Sidebar';
 
 // Crear el contexto para el carrito de compras
 const CartContext = createContext();
@@ -146,6 +147,8 @@ function Accessories() {
     const [initialProducts, setInitialProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const productsPerPage = 9;
 
     useEffect(() => {
         fetch(import.meta.env.VITE_API_PRODUCT_URL) // Cambia la URL por la de tu API
@@ -178,7 +181,15 @@ function Accessories() {
             accessory.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
         setSearchResults(results);
+        setCurrentPage(1); // Resetear a la primera página al buscar
     };
+
+    const indexOfLastProduct = currentPage * productsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+    const currentProducts = searchResults.slice(indexOfFirstProduct, indexOfLastProduct);
+
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -191,21 +202,31 @@ function Accessories() {
         <CartProvider>
             <Navbar onSearch={handleSearch} />
             <div className="flex">
-                <div className="w-1/5 p-4 bg-gray-100">
-                    <h2 className="text-xl font-bold mb-4">Productos</h2>
-                    <ul>
-                        <li className="mb-2"><a href="/Accesorios" className="text-gray-700 hover:text-black">Accesorios</a></li>
-                        <li className="mb-2"><a href="/Desktop" className="text-gray-700 hover:text-black">Desktops</a></li>
-                        <li className="mb-2"><a href="/Laptos" className="text-gray-700 hover:text-black">Laptops</a></li>
-                        <li className="mb-2"><a href="/telefono" className="text-gray-700 hover:text-black">Teléfonos</a></li>
-                    </ul>
+                <div className="w-64">
+                    <Sidebar />
                 </div>
-                <div className="w-4/5 p-8">
+                <div className="flex-1 p-8">
                     <h2 className="text-2xl font-bold mb-4">Accesorios</h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                        {searchResults.map(accessory => (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                        {currentProducts.map(accessory => (
                             <AccessoryCard key={accessory.id} accessory={accessory} />
                         ))}
+                    </div>
+                    <div className="flex justify-center mt-8">
+                        <nav>
+                            <ul className="pagination flex">
+                                {Array.from({ length: Math.ceil(searchResults.length / productsPerPage) }, (_, i) => (
+                                    <li key={i} className="page-item">
+                                        <button
+                                            onClick={() => paginate(i + 1)}
+                                            className={`px-4 py-2 border ${currentPage === i + 1 ? 'bg-red-600 text-white' : 'bg-white text-red-600'}`}
+                                        >
+                                            {i + 1}
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>
