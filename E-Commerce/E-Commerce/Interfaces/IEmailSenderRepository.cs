@@ -8,5 +8,6 @@ namespace E_Commerce.Interfaces
         Task<Result<string>> SaveVerificationCode(string email);
         Task<Result> CompareVerificationCode(string email, string code);
         Task<Result> PasswordRecovery(string email, string code, string newpassword);
+        public string generatebody(string titulo, string subtitulo, string mensaje);
     }
 }

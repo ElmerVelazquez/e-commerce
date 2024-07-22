@@ -15,10 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 var config = builder.Configuration;
-//if (builder.Environment.IsDevelopment()) { 
 
-//   builder.Configuration.AddUserSecrets<Program>();
-//}
 
 // Add services to the container.
 builder.Services.AddAuthentication(x =>
@@ -98,10 +95,25 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 });
 
-var connection_string = builder.Configuration.GetConnectionString("Default"); 
+
+var environment = builder.Environment.EnvironmentName;
+
+// Configurar la cadena de conexión basada en el entorno
+string connectionString;
+
+if (environment == "Development")
+{
+    connectionString = builder.Configuration.GetConnectionString("Default2");
+}
+else
+{
+    connectionString = builder.Configuration.GetConnectionString("Default");
+}
+
+
 builder.Services.AddDbContext<EcommerceDbContext>(options =>
     
-    options.UseSqlServer(connection_string)
+    options.UseSqlServer(connectionString)
 );
 
 //AddScoped

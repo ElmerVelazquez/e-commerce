@@ -1,7 +1,9 @@
-﻿using E_Commerce.Interfaces;
+﻿using Azure.Core;
+using E_Commerce.Interfaces;
 using E_Commerce.Models;
 using E_Commerce.Utilities;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Mail;
@@ -42,10 +44,12 @@ namespace E_Commerce.Repository
         }
         public async Task<Result<string>> SaveVerificationCode(string email)
         {
+            
             var rng = new Random();
             string code = rng.Next(1000000, 9999999).ToString();
             var regis = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
             if (regis == null) return Result<string>.Fail("Email no encontrado");
+            if (regis.verified == true) return Result<string>.Fail("El usuario ya esta verificado");
             regis.verificationCode = code;
             await _context.SaveChangesAsync();
             return Result<string>.Success(code);
@@ -82,6 +86,51 @@ namespace E_Commerce.Repository
             }
             return respons;
 
-        } 
+        }
+       
+        public string generatebody(string titulo, string subtitulo, string mensaje)
+        {
+            return @"
+        <html>
+        <head>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f2f2f2;
+                }
+                .container {
+                    max-width: 600px;
+                    margin: 0 auto;
+                    padding: 20px;
+                    background-color: #fff;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                }
+                h1 {
+                    color: #333;
+                    text-align: center;
+                }
+                p {
+                    color: #666;
+                }
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <h1>"+titulo+@"</h1>
+                <p>" + subtitulo+@"</p>
+                <p>" + mensaje + @"</p>
+                <p>Si no has sido tú ignora este correo</p>
+            </div>
+        </body>
+        </html>
+    ";
+        }
+
+
+
+
+
     }
 }
