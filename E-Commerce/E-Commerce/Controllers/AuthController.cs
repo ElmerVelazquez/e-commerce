@@ -29,16 +29,17 @@ namespace E_Commerce.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserLogin user)
         {
-            var regis = await _context.Users.Where(x => user.Email.Equals(x.Email)).FirstAsync();
+            var regis = await _context.Users.FirstOrDefaultAsync(x => user.Email.Equals(x.Email));
             if (regis == null) return NotFound(Result.Fail("usuario no encontrado"));
-            var regispass = await _context.Passwords.Where(x => regis.Id == x.UserId).FirstAsync();
+            var regispass = await _context.Passwords.FirstOrDefaultAsync(x => regis.Id == x.UserId);
             if (!PasswordHasher.VerifyPassword(regispass.PasswordHash, user.Password)) return Unauthorized(Result.Fail("Credenciales invalidas"));
+            if(regis.verified != true) return Unauthorized(Result.Fail("usuario no verificado"));
 
             var token = GenerateAccessToken(regis);
 
             var refreshToken = GenerateRefreshToken();
 
-            var refreshfield = await _context.Passwords.Where(u => u.UserId == regis.Id).FirstOrDefaultAsync();
+            var refreshfield = await _context.Passwords.FirstOrDefaultAsync(u => u.UserId == regis.Id);
             refreshfield.RefreshToken = refreshToken;
             await _context.SaveChangesAsync();
 
@@ -68,7 +69,8 @@ namespace E_Commerce.Controllers
                 {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.Email),
-            new Claim(ClaimTypes.Role, user.Rol)
+            new Claim(ClaimTypes.Role, user.Rol),
+            new Claim("Verified", user.verified.ToString(), ClaimValueTypes.Boolean)
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(15),
                 Issuer = _configuration["jwtSettings:Issuer"],

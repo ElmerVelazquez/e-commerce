@@ -10,13 +10,15 @@ using Microsoft.Win32;
 
 namespace E_Commerce.Repository
 {
-    public class UserRepository: BaseRepository<User>, IUserRepository
+    public class UserRepository: BaseRepository<User>, IUserRepository 
     {
         private readonly IShoppingCartRepository _shoppingcart;
-        public UserRepository(EcommerceDbContext context, IMapper mapper, IShoppingCartRepository shoppingcart)
+        private readonly IEmailSenderRepository _emailsender;
+        public UserRepository(EcommerceDbContext context, IMapper mapper, IShoppingCartRepository shoppingcart, IEmailSenderRepository emailsender)
             : base(context,mapper)
         {
             _shoppingcart = shoppingcart;
+            _emailsender = emailsender;
         }
         public async Task<bool> EmailExist(string email)
         {
@@ -94,12 +96,12 @@ namespace E_Commerce.Repository
         }
         public async Task<Result> UpdatePassword(int id, string newpassword)
         {
-            var regis = await _context.Passwords.Where(u => u.UserId == id).FirstOrDefaultAsync();
+            var regis = await _context.Passwords.FirstOrDefaultAsync(u => u.UserId == id);
             if(regis == null) return Result.Fail("usuario no encontrado");
             var userhashedpassword = PasswordHasher.HashPassword(newpassword);
             regis.PasswordHash = userhashedpassword;
             await _context.SaveChangesAsync();
             return Result.Success();
-        }
+        }      
     }
 }

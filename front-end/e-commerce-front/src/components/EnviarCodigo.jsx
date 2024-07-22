@@ -9,10 +9,11 @@ const MySwal = withReactContent(Swal);
 function EnviarCodigo() {
     const [email, setEmail] = useState('');
     const navigate = useNavigate();
+    const urlsendcode = import.meta.env.VITE_API_SENDCODE_URL; 
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        
+        // Aquí deberías agregar la lógica para enviar el código al correo
         MySwal.fire({
             title: 'Éxito',
             text: 'Se ha enviado un código a tu correo',
@@ -20,7 +21,7 @@ function EnviarCodigo() {
             confirmButtonText: 'OK'
         }).then(() => {
             // Redirige al usuario a la página de restablecer contraseña después de enviar el código
-            navigate('/confirmarcodigo');
+            navigate('/olvidar-contraseña');
         });
     };
 
@@ -75,6 +76,7 @@ function EnviarCodigo() {
             </div>
         </>
     );
-}
+
+};
 
 export default EnviarCodigo;
