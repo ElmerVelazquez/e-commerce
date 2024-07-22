@@ -14,17 +14,50 @@ function EnviarCodigo() {
     const handleSubmit = async (event) => {
         event.preventDefault();
         // Aquí deberías agregar la lógica para enviar el código al correo
-        MySwal.fire({
-            title: 'Éxito',
-            text: 'Se ha enviado un código a tu correo',
-            icon: 'success',
-            confirmButtonText: 'OK'
-        }).then(() => {
-            // Redirige al usuario a la página de restablecer contraseña después de enviar el código
-            navigate('/olvidar-contraseña');
-        });
-    };
+        
+        try {
+            const response = await fetch(urlsendcode, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(email),
+            });
 
+            const data = await response.json();
+            if (response.ok) {
+                MySwal.fire({
+                    title: 'Éxito',
+                    text: 'Se ha enviado un código a tu correo',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    // Redirige al usuario a la página de restablecer contraseña después de enviar el código
+                    navigate('/olvidarcontrasena');
+                });
+            } 
+            if (!response.ok) {
+                MySwal.fire({
+                    title: 'Error',
+                    text: data.errorMessage || 'Error al enviar el codigo',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }                       
+
+        } catch (error) {            
+            MySwal.fire({
+                title: 'Error',
+                text: 'Error al enviar el codigo',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    };
+        
+        
+  
     return (
         <>
             {/* Sección del navbar */}

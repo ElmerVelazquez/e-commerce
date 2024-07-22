@@ -40,7 +40,7 @@ function ConfirmarCodigo() {
                 <div className="bg-white p-8 shadow-md rounded w-96">
                     <h2 className="text-2xl font-bold mb-2 text-center">Confirmar Código</h2>
                     <p className="mb-6 text-center text-gray-600">
-                        Por favor, introduce el código que has recibido en tu correo electrónico.
+                        Por favor, introduce el código que hemos enviado a tu correo electrónico.
                     </p>
                     <form onSubmit={handleSubmit}>
                         {/* Campo de entrada para el código */}
