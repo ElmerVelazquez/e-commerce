@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AiOutlineMail, AiOutlineLock, AiFillEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import {AiOutlineLock, AiFillEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 
