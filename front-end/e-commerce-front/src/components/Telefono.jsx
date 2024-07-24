@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect, useContext, createContext } from 'react';
 import PropTypes from 'prop-types';
 import { FaShoppingCart, FaUser, FaTrash } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Buscador from './Buscador';
+import ProductDetail from './ProductDetail';
 
 // Crear el contexto para el carrito de compras
 const CartContext = createContext();
@@ -78,15 +80,21 @@ const TelefonoCard = ({ telefono }) => {
     const { addToCart } = useContext(CartContext);
 
     return (
-        <div className="relative border rounded-lg p-4 shadow-md block hover:shadow-lg transition-shadow duration-200">
+        <Link to={`/product/${telefono.id}`} className="relative border rounded-lg p-4 shadow-md block hover:shadow-lg transition-shadow duration-200">
             <div className="w-full h-32 mb-4 flex items-center justify-center">
                 <img src={telefono.urlImg} alt={telefono.name} className="max-h-full max-w-full object-contain" />
             </div>
             <h3 className="text-lg font-semibold">{telefono.name}</h3>
             <p className="text-sm">{telefono.description}</p>
             <p className="text-md font-bold mt-2">RD$ {telefono.price.toLocaleString('en-US')}</p>
-            <FaShoppingCart className="absolute bottom-4 right-4 text-black text-3xl cursor-pointer" onClick={() => addToCart(telefono)} />
-        </div>
+            <FaShoppingCart 
+                className="absolute bottom-4 right-4 text-black text-3xl cursor-pointer" 
+                onClick={(e) => { 
+                    e.preventDefault(); 
+                    addToCart(telefono); 
+                }} 
+            />
+        </Link>
     );
 };
 
