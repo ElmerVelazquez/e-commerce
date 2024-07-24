@@ -31,4 +31,6 @@ public partial class User: InterfaceId
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
     public virtual ICollection<ShoppingCart> ShoppingCarts { get; set; } = new List<ShoppingCart>();
+    public virtual ICollection<PaymentMethod> PaymentMethods { get; set; }
+    public virtual ICollection<Wishlist> Wishlists { get; set; }
 }

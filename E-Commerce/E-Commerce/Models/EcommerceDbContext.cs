@@ -32,6 +32,11 @@ public partial class EcommerceDbContext : DbContext
     public virtual DbSet<User> Users { get; set; }
     public virtual DbSet<Password> Passwords { get; set; }
 
+    public DbSet<Discount> Discounts { get; set; }
+    public DbSet<PaymentMethod> PaymentMethods { get; set; }
+    public DbSet<Wishlist> Wishlists { get; set; }
+    public DbSet<WishlistItem> WishlistItems { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Address>(entity =>
@@ -234,6 +239,56 @@ public partial class EcommerceDbContext : DbContext
             .ValueGeneratedOnAdd();
             entity.Property(e => e.RefreshToken).HasMaxLength(123);
         });
+
+        modelBuilder.Entity<Discount>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.DiscountType).IsRequired();
+            entity.Property(e => e.DiscountValue).IsRequired().HasColumnType("decimal(18,2)");
+            entity.HasOne(d => d.Product)
+                  .WithMany(p => p.Discounts)
+                  .HasForeignKey(d => d.ProductId)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<PaymentMethod>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Type).IsRequired();
+            entity.Property(e => e.Details).IsRequired();
+
+            entity.HasOne(pm => pm.User)
+                  .WithMany(u => u.PaymentMethods)
+                  .HasForeignKey(pm => pm.UserId)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Wishlist>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.CreationDate).IsRequired();
+
+            entity.HasOne(w => w.User)
+                  .WithMany(u => u.Wishlists)
+                  .HasForeignKey(w => w.UserId)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<WishlistItem>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            entity.HasOne(wi => wi.Wishlist)
+                  .WithMany(w => w.WishlistItems)
+                  .HasForeignKey(wi => wi.WishlistId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(wi => wi.Product)
+                  .WithMany()
+                  .HasForeignKey(wi => wi.ProductId)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
+
 
         OnModelCreatingPartial(modelBuilder);
     }

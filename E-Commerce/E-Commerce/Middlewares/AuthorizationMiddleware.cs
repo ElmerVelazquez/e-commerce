@@ -34,10 +34,13 @@ namespace E_Commerce.Middlewares
                 var EndpointsResource = new[] {
                     $"/api/addresses/{routeId}",
                     $"/api/orders/{routeId}",
-                    $"/api/shoppingcarts/{routeId}"};
+                    $"/api/shoppingcarts/{routeId}",
+                    $"/api/discounts/{routeId}",
+                    $"/api/paymentmethods/{routeId}"};
                 var EndpointsSubResource = new[] {
                     $"/api/cartitems/{routeId}",
-                    $"/api/orderdetails/{routeId}"};
+                    $"/api/orderdetails/{routeId}",
+                    $"/api/wishlistItem/{routeId}"};
                 
                 var requestPath = context.Request.Path.Value?.ToLower();
                 if (context.User.IsInRole("admin") || routeId == null)

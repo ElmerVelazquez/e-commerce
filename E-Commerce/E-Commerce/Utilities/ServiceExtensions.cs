@@ -14,11 +14,15 @@ namespace E_Commerce.Utilities
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
 
-            services.AddScoped<IBaseRepository<Product>, BaseRepository<Product>>();
             services.AddScoped<IBaseRepository<Category>, BaseRepository<Category>>();
             services.AddScoped<IBaseRepository<Address>, BaseRepository<Address>>();
             services.AddScoped<IBaseRepository<CartItem>, BaseRepository<CartItem>>();
+            services.AddScoped<IBaseRepository<Discount>, BaseRepository<Discount>>();
+            services.AddScoped<IBaseRepository<PaymentMethod>, BaseRepository<PaymentMethod>>();
+            services.AddScoped<IBaseRepository<Wishlist>, BaseRepository<Wishlist>>();
+            services.AddScoped<IBaseRepository<WishlistItem>, BaseRepository<WishlistItem>>();
 
             services.AddTransient<IEmailSenderRepository, EmailSenderRepository>();
 

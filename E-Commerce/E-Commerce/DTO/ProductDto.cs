@@ -13,5 +13,6 @@
         public int? CategoryId { get; set; }
 
         public string? UrlImg { get; set; }
+       
     }
 }
