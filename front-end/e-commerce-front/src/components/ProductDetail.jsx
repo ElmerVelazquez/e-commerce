@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from 'react'; // Importar useRef
+import React, { useState, useEffect, useContext, useRef } from 'react'; 
 import { useParams, Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
@@ -65,7 +65,7 @@ const Navbar = ({ onSearch }) => {
                                 <div>
                                     {cart.map(product => (
                                         <div key={product.id} className="flex justify-between items-center mb-2">
-                                            <img src={product.urlImg} alt={product.name} className="w-16 h-16 object-cover" />
+                                            <img src={product.urlImg} alt={product.name} className="w-12 h-12 object-cover" />
                                             <div className="flex-1 ml-2">
                                                 <h3 className="text-sm font-semibold">{product.name}</h3>
                                                 <p className="text-sm">{product.price}</p>
@@ -132,17 +132,16 @@ const ProductDetail = () => {
         <div>
             <Navbar onSearch={() => {}} /> {/* Puedes ajustar la función de búsqueda según sea necesario */}
             <div className="container mx-auto p-4">
-                <div className="flex">
-                    <div className="w-1/2 p-4">
-                        <img src={product.urlImg} alt={product.name} className="w-full h-auto object-contain" />
-                        <div className="flex space-x-4 mt-4">
-                            {/* Aquí podrías agregar más imágenes del producto */}
-                            <img src={product.urlImg} alt={product.name} className="w-1/4 h-auto object-contain" />
-                            <img src={product.urlImg} alt={product.name} className="w-1/4 h-auto object-contain" />
-                            <img src={product.urlImg} alt={product.name} className="w-1/4 h-auto object-contain" />
+                <div className="flex flex-col md:flex-row items-start">
+                    <div className="w-full md:w-1/2 p-4">
+                        <img src={product.urlImg} alt={product.name} className="w-80 h-auto object-contain mx-auto" />
+                        <div className="flex space-x-4 mt-4 justify-center">
+                            <img src={product.urlImg} alt={product.name} className="w-24 h-auto object-contain" />
+                            <img src={product.urlImg} alt={product.name} className="w-24 h-auto object-contain" />
+                            <img src={product.urlImg} alt={product.name} className="w-24 h-auto object-contain" />
                         </div>
                     </div>
-                    <div className="w-1/2 p-4">
+                    <div className="w-full md:w-1/2 p-4 md:ml-8">
                         <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
                         <p className="mb-4">{product.description}</p>
                         <p className="text-2xl font-bold mb-4">RD${product.price}</p>
@@ -165,7 +164,7 @@ const ProductDetail = () => {
                         {similarProducts.map(similarProduct => (
                             <div key={similarProduct.id} className="border p-4 rounded flex flex-col">
                                 <h3 className="text-lg font-bold mb-2">{similarProduct.name}</h3>
-                                <img src={similarProduct.urlImg} alt={similarProduct.name} className="w-full h-32 object-contain mb-2" />
+                                <img src={similarProduct.urlImg} alt={similarProduct.name} className="w-full h-24 object-contain mb-2" />
                                 <p className="mb-2">RD${similarProduct.price}</p>
                                 <Link to={`/product/${similarProduct.id}`} className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-700 mt-auto text-center">
                                     Ver detalles
