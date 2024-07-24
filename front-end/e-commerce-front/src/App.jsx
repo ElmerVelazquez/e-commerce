@@ -14,6 +14,8 @@ import { CardContextProvider } from './components/CardContext';
 import { AuthProvider } from './contexts/AuthContext'; // Importa el proveedor de AuthContext
 import OlvidarContrasena from './components/OlvidarContrasena';
 import EnviarCodigo from './components/EnviarCodigo';
+import ConfirmarCodigo from './components/ConfirmarCodigo';
+import ProductDetail from './components/ProductDetail';
 
 function App() {
     return (
@@ -33,6 +35,8 @@ function App() {
                             <Route path='/adminpage' element={<AdminPage />} />
                             <Route path='/olvidarcontrasena' element={< OlvidarContrasena />} />
                             <Route path='/enviarcodigo' element={<EnviarCodigo />} />
+                            <Route path='confirmarCodigo' element={<ConfirmarCodigo />} />
+                            <Route path="/product/:id" element={<ProductDetail />} />
                         </Routes>
                     </CardContextProvider>
                 </AuthProvider>
