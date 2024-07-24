@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useContext, createContext } from 'react';
 import PropTypes from 'prop-types';
 import { FaShoppingCart, FaUser, FaTrash } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import Sidebar from './Sidebar';
 
 // Crear el contexto para el carrito de compras
@@ -61,7 +62,7 @@ const Navbar = ({ onSearch }) => {
     return (
         <div className="flex bg-red-600 p-8 justify-between items-center">
             <h1 className="text-white text-2xl font-bold">
-                <a href="/">LincolnTech</a>
+                <Link to="/">LincolnTech</Link>
             </h1>
             <input
                 type="text"
@@ -103,8 +104,8 @@ const Navbar = ({ onSearch }) => {
                 <FaUser className="text-white text-2xl cursor-pointer" onClick={toggleUserMenu} />
                 {isUserMenuOpen && (
                     <div ref={userMenuRef} className="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg">
-                        <a href="/login" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Iniciar Sesión</a>
-                        <a href="/registro" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Registrarse</a>
+                        <Link to="/login" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Iniciar Sesión</Link>
+                        <Link to="/registro" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">Registrarse</Link>
                     </div>
                 )}
             </div>
@@ -121,14 +122,17 @@ const DesktopCard = ({ desktop }) => {
     const { addToCart } = useContext(CartContext);
 
     return (
-        <div className="relative border rounded-lg p-4 shadow-md block hover:shadow-lg transition-shadow duration-200">
+        <Link to={`/product/${desktop.id}`} className="relative border rounded-lg p-4 shadow-md block hover:shadow-lg transition-shadow duration-200">
             <div className="w-full h-32 mb-4 flex items-center justify-center">
                 <img src={desktop.urlImg} alt={desktop.name} className="max-h-full max-w-full object-contain" />
             </div>
             <h3 className="text-lg font-semibold">{desktop.name}</h3>
             <p className="text-md font-bold mt-2">RD$ {desktop.price.toLocaleString('en-US')}</p>
-            <FaShoppingCart className="absolute bottom-4 right-4 text-black text-3xl cursor-pointer" onClick={() => addToCart(desktop)} />
-        </div>
+            <FaShoppingCart className="absolute bottom-4 right-4 text-black text-3xl cursor-pointer" onClick={(e) => { 
+                e.preventDefault(); 
+                addToCart(desktop); 
+            }} />
+        </Link>
     );
 };
 
@@ -160,7 +164,6 @@ function Desktops() {
             })
             .then(data => {
                 if (data.isSuccess) {
-                    // Verificar que los productos existan y estén definidos
                     const allProducts = data.value || [];
                     const deskProducts = allProducts.filter(product => product.categoryId === 3);                    
                     setInitialProducts(deskProducts);
@@ -236,7 +239,7 @@ const Pagination = ({ productsPerPage, totalProducts, paginate, currentPage }) =
         <nav className="mt-4">
             <ul className="flex justify-center space-x-2">
                 {pageNumbers.map(number => (
-                    <li key={number} className={`cursor-pointer ${currentPage === number ? 'text-red-500 font-bold' : 'text-gray-500'}`}>
+                    <li key={number} className={`px-4 py-2 mx-1 rounded ${currentPage === number ? 'bg-red-500 text-white' : 'bg-gray-300 text-black'}`}>
                         <a onClick={() => paginate(number)}>{number}</a>
                     </li>
                 ))}

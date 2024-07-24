@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useContext, createContext } from 'react';
 import PropTypes from 'prop-types';
 import { FaShoppingCart, FaUser, FaTrash } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import Sidebar from './Sidebar';
 
 // Crear el contexto para el carrito de compras
@@ -26,7 +27,7 @@ const CartProvider = ({ children }) => {
     );
 };
 
-// Componente de la barra de navegación
+// Componente de la barra de navegación para Laptops
 const Navbar = ({ onSearch }) => {
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
@@ -84,7 +85,7 @@ const Navbar = ({ onSearch }) => {
                                 <div>
                                     {cart.map(product => (
                                         <div key={product.id} className="flex justify-between items-center mb-2">
-                                            <img src={product.image} alt={product.name} className="w-16 h-16 object-cover" />
+                                            <img src={product.urlImg} alt={product.name} className="w-16 h-16 object-cover" />
                                             <div className="flex-1 ml-2">
                                                 <h3 className="text-sm font-semibold">{product.name}</h3>
                                                 <p className="text-sm">{product.price}</p>
@@ -121,14 +122,20 @@ const LaptopCard = ({ laptop }) => {
     const { addToCart } = useContext(CartContext);
 
     return (
-        <div className="relative border rounded-lg p-4 shadow-md block hover:shadow-lg transition-shadow duration-200">
+        <Link to={`/product/${laptop.id}`} className="relative border rounded-lg p-4 shadow-md block hover:shadow-lg transition-shadow duration-200">
             <div className="w-full h-32 mb-4 flex items-center justify-center">
-                <img src={laptop.image} alt={laptop.name} className="max-h-full max-w-full object-contain" />
+                <img src={laptop.urlImg} alt={laptop.name} className="max-h-full max-w-full object-contain" />
             </div>
             <h3 className="text-lg font-semibold">{laptop.name}</h3>
             <p className="text-md font-bold mt-2">RD$ {laptop.price.toLocaleString('en-US')}</p>
-            <FaShoppingCart className="absolute bottom-4 right-4 text-black text-3xl cursor-pointer" onClick={() => addToCart(laptop)} />
-        </div>
+            <FaShoppingCart 
+                className="absolute bottom-4 right-4 text-black text-3xl cursor-pointer" 
+                onClick={(e) => { 
+                    e.preventDefault(); 
+                    addToCart(laptop); 
+                }} 
+            />
+        </Link>
     );
 };
 
@@ -137,7 +144,7 @@ LaptopCard.propTypes = {
         id: PropTypes.number.isRequired,
         name: PropTypes.string.isRequired,
         price: PropTypes.string.isRequired,
-        image: PropTypes.string.isRequired,
+        urlImg: PropTypes.string.isRequired,
     }).isRequired,
 };
 
@@ -191,7 +198,7 @@ function Laptos() {
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <div>Cargando...</div>;
     }
 
     if (error) {
@@ -216,10 +223,10 @@ function Laptos() {
                         <nav>
                             <ul className="pagination flex">
                                 {Array.from({ length: Math.ceil(searchResults.length / productsPerPage) }, (_, i) => (
-                                    <li key={i} className="mx-1">
+                                    <li key={i} className="page-item">
                                         <button
                                             onClick={() => paginate(i + 1)}
-                                            className={`px-3 py-1 rounded ${currentPage === i + 1 ? 'bg-red-600 text-white' : 'bg-gray-200'}`}
+                                            className={`px-4 py-2 mx-1 rounded ${currentPage === i + 1 ? 'bg-red-500 text-white' : 'bg-gray-300 text-black'}`}
                                         >
                                             {i + 1}
                                         </button>
