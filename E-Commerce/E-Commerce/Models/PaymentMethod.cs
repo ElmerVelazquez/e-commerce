@@ -4,7 +4,7 @@ using E_Commerce.Interfaces;
 
 namespace E_Commerce.Models
 {
-    public enum PaymentType : InterfaceId
+    public enum PaymentType 
     {
         CreditCard,
         DebitCard,

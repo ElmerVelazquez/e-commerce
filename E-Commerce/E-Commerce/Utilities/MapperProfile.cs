@@ -17,15 +17,20 @@ namespace E_Commerce.Utilities
             CreateMap<ShoppingCartDto, ShoppingCart>();
             CreateMap<OrderDto, Order>();
             CreateMap<OrderDetailDto, OrderDetail>();
+            CreateMap<WishlistItemDto, WishlistItem>();
+            CreateMap<DiscountDto, Discount>();
+            CreateMap<PaymentMethodDto, PaymentMethod>();
 
-            //salida de datos, sin uso aun 
-            CreateMap<User, UserDto>();
-            CreateMap<Address, AddressDto>();
-            CreateMap<Product, ProductDto>();
-            CreateMap<Category, CategoryDto>();
-            CreateMap<CartItem, CartItemDto>();
-            CreateMap<Order, OrderDto>();
-            CreateMap<OrderDetail, OrderDetailDto>();
+            //salida de datos 
+            CreateMap<Product, ProductOutDto>().ForMember(dest => dest.Discounts, opt => opt.MapFrom(src => src.Discounts.Select(d => new Discount
+            {
+                Id = d.Id,
+                DiscountType = d.DiscountType,
+                DiscountValue = d.DiscountValue,
+                StartDate = d.StartDate,
+                EndDate = d.EndDate
+                
+            })));
         }
     }
 }
