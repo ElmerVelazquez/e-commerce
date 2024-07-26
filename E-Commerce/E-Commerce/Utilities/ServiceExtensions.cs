@@ -25,9 +25,6 @@ namespace E_Commerce.Utilities
             services.AddScoped<IBaseRepository<WishlistItem>, BaseRepository<WishlistItem>>();
 
             services.AddTransient<IEmailSenderRepository, EmailSenderRepository>();
-
-
-
         }
     }
 }

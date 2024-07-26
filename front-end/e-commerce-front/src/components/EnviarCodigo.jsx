@@ -3,20 +3,21 @@ import { AiOutlineMail } from 'react-icons/ai';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const MySwal = withReactContent(Swal);
 
 function EnviarCodigo() {
-    const [email, setEmail] = useState('');
+    const {email, setEmail} = useAuth();
     const navigate = useNavigate();
     const urlsendcode = import.meta.env.VITE_API_SENDCODE_URL; 
 
     
     const handleSubmit = async (event) => {
         event.preventDefault();
-        // Aquí deberías agregar la lógica para enviar el código al correo
-        
+               
         try {
+            console.log(email)
             const response = await fetch(urlsendcode, {
                 method: 'POST',
                 headers: {
@@ -24,8 +25,8 @@ function EnviarCodigo() {
                 },
                 body: JSON.stringify(email),
             });
-
             const data = await response.json();
+            console.log(response)
             if (response.ok) {
                 MySwal.fire({
                     title: 'Éxito',
@@ -34,7 +35,7 @@ function EnviarCodigo() {
                     confirmButtonText: 'OK'
                 }).then(() => {
                     // Redirige al usuario a la página de restablecer contraseña después de enviar el código
-                    navigate('/olvidarcontrasena');
+                    navigate('/ConfirmarCodigo');
                 });
             } 
             if (!response.ok) {

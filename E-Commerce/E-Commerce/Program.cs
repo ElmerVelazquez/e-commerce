@@ -93,7 +93,7 @@ builder.Services.AddCors(options =>
 });
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
-    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 });
 
@@ -111,7 +111,6 @@ else
 {
     connectionString = builder.Configuration.GetConnectionString("Default");
 }
-
 
 builder.Services.AddDbContext<EcommerceDbContext>(options =>
     

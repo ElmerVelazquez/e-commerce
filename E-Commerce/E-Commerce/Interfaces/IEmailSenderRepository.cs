@@ -7,7 +7,7 @@ namespace E_Commerce.Interfaces
         Task<Result> SendEmailAsync(string email, string subject, string message);
         Task<Result<string>> SaveVerificationCode(string email);
         Task<Result> CompareVerificationCode(string email, string code);
-        Task<Result> PasswordRecovery(string email, string code, string newpassword);
+        Task<Result> PasswordRecovery(string email, string newpassword);
         public string generatebody(string titulo, string subtitulo, string mensaje);
     }
 }

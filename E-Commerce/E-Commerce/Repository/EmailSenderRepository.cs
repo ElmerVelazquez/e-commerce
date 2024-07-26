@@ -49,7 +49,7 @@ namespace E_Commerce.Repository
             string code = rng.Next(1000000, 9999999).ToString();
             var regis = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
             if (regis == null) return Result<string>.Fail("Email no encontrado");
-            if (regis.verified == true) return Result<string>.Fail("El usuario ya esta verificado");
+            //if (regis.verified == true) return Result<string>.Fail("El usuario ya esta verificado");
             regis.verificationCode = code;
             await _context.SaveChangesAsync();
             return Result<string>.Success(code);
@@ -63,15 +63,16 @@ namespace E_Commerce.Repository
                 return Result.Fail("Codigo incorrecto");
             }
             regis.verified = true;
-            regis.verificationCode = null;
+            regis.verificationCode = "passwordOK";
             await _context.SaveChangesAsync();
             return Result<string>.Success("codigo verificado correctamente");
             
         }
-        public async Task<Result> PasswordRecovery(string email, string code, string newpassword)
+        public async Task<Result> PasswordRecovery(string email, string newpassword)
         {
-            var respons = CompareVerificationCode(email, code).Result;
-            if (respons.IsSuccess)
+            var regis = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (regis == null) return Result.Fail("email no encontrado");
+            if (regis.verificationCode == "passwordOK")
             {
                 var regisUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
                 if (regisUser == null) return Result.Fail("usuario no encontrado");
@@ -84,7 +85,7 @@ namespace E_Commerce.Repository
                 await _context.SaveChangesAsync();
                 return Result.Success();
             }
-            return respons;
+            return Result.Fail("Error al verificar el codigo");
 
         }
        

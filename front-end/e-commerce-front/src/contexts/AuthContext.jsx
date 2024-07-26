@@ -14,6 +14,7 @@ const INACTIVITY_TIME =15 * 10 * 1000; //10 seg
 // Proveedor de contexto para manejar la autenticación
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [email, setEmail] = useState('');
     const navigate = useNavigate();
     const timerId = useRef(null);
 
@@ -212,7 +213,7 @@ export const AuthProvider = ({ children }) => {
         };
     }, [logout, navigate]);
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
+        <AuthContext.Provider value={{ user, login, logout, email, setEmail}}>
             {children}
         </AuthContext.Provider>
     );
