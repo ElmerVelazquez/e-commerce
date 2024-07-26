@@ -52,7 +52,9 @@ function OlvidarContrasena() {
                     confirmButtonText: 'OK'
                 }).then(() => {
                     // Redirige al usuario a la página de restablecer contraseña después de enviar el código
+                    setEmail("")
                     navigate('/Login');
+
                 });
             } 
             if (!response.ok) {
