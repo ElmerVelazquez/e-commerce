@@ -16,6 +16,7 @@ import OlvidarContrasena from './components/OlvidarContrasena';
 import EnviarCodigo from './components/EnviarCodigo';
 import ConfirmarCodigo from './components/ConfirmarCodigo';
 import ProductDetail from './components/ProductDetail';
+import VerificationPage from './components/VerificationPage';
 
 function App() {
     return (
@@ -37,6 +38,7 @@ function App() {
                             <Route path='/enviarcodigo' element={<EnviarCodigo />} />
                             <Route path='confirmarCodigo' element={<ConfirmarCodigo />} />
                             <Route path="/product/:id" element={<ProductDetail />} />
+                            <Route path="/verificar" element={<VerificationPage />} />
                         </Routes>
                     </CardContextProvider>
                 </AuthProvider>

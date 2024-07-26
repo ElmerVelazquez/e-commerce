@@ -51,15 +51,33 @@ function Registro() {
             });
 
             if (response.ok) {
-                setError('');
-                MySwal.fire({
-                    title: 'Éxito',
-                    text: 'Usuario registrado con éxito',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    navigate('/login'); 
+                 // Llamada al endpoint SendVerificationUrl
+                 const verificationUrlResponse = await fetch(import.meta.env.VITE_API_SENDURL_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: email, urlPageVerification: 'http://localhost:5174/verificar' }),
                 });
+                if (verificationUrlResponse.ok) {
+                    MySwal.fire({
+                        title: 'Éxito',
+                        text: 'Se enviará un enlace de verificación al correo',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {                     
+                        navigate('/login'); 
+                    });
+                } else {
+                    const verificationData = await verificationUrlResponse.json();
+                    setError(verificationData.message || 'Error al enviar el enlace de verificación');
+                    MySwal.fire({
+                        title: 'Error',
+                        text: verificationData.errorMessage || 'Error al enviar el enlace de verificación',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }              
         
             } else {
                 const data = await response.json();
