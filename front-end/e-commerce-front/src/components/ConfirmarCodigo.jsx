@@ -2,27 +2,60 @@ import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const MySwal = withReactContent(Swal);
 
 function ConfirmarCodigo() {
-    const [codigo, setCodigo] = useState('');
+    const [codigo, setCodigo] = useState(''); 
     const navigate = useNavigate();
+    const {email, setEmail} = useAuth();
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
-        MySwal.fire({
-            title: 'Éxito',
-            text: 'Código verificado correctamente',
-            icon: 'success',
-            confirmButtonText: 'OK'
-        }).then(() => {
-            // Redirige al usuario a la página de restablecer contraseña después de verificar el código
-            navigate('/olvidarcontrasena');
-        });
-    };
+        try {
+            console.log(JSON.stringify({ email: email, code: codigo }))
+            const response = await fetch(import.meta.env.VITE_API_CHECKCODE_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: email, code: codigo }),
+            });
+            
+            const data = await response.json();
+            if (response.ok) {
+                MySwal.fire({
+                    title: 'Éxito',
+                    text: data.errorMessage || 'codigo verificado con exito',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    // Redirige al usuario a la página de restablecer contraseña después de enviar el código
+                    navigate('/OlvidarContrasena');
+                });
+            } 
+            if (!response.ok) {
+                MySwal.fire({
+                    title: 'Error',
+                    text: data.errorMessage || 'Error al confirmar el codigo',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }                       
 
+        } catch (error) {            
+            MySwal.fire({
+                title: 'Error',
+                text: 'Error al confirmar el codigo',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    };
+       
     return (
         <>
             {/* Sección del navbar */}

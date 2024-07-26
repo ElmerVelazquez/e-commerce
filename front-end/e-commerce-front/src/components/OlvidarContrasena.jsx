@@ -2,20 +2,24 @@ import React, { useState } from 'react';
 import {AiOutlineLock, AiFillEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+
 
 const MySwal = withReactContent(Swal);
 
 function OlvidarContrasena() {
-    const [email, setEmail] = useState('');
+    const {email, setEmail} = useAuth();
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const navigate = useNavigate();
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
         if (newPassword !== confirmPassword) {
             MySwal.fire({
@@ -27,12 +31,48 @@ function OlvidarContrasena() {
             return;
         }
         // Aquí deberías agregar la lógica para enviar los datos al servidor
-        MySwal.fire({
-            title: 'Éxito',
-            text: 'Contraseña restablecida con éxito',
-            icon: 'success',
-            confirmButtonText: 'OK'
-        });
+
+        try {
+            console.log(JSON.stringify({ email: email, newPassword: newPassword }))
+            const response = await fetch(import.meta.env.VITE_API_PASSWORDRECOVERY_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: email, newPassword: newPassword}),
+            });
+            
+            const data = await response.json();
+            console.log(response)
+            if (response.ok) {
+                MySwal.fire({
+                    title: 'Éxito',
+                    text: data.errorMessage || 'Contraseña restablecida con éxito',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    // Redirige al usuario a la página de restablecer contraseña después de enviar el código
+                    navigate('/Login');
+                });
+            } 
+            if (!response.ok) {
+                MySwal.fire({
+                    title: 'Error',
+                    text: data.errorMessage || 'Error al cambiar la contraseña',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }                       
+
+        } catch (error) {            
+            MySwal.fire({
+                title: 'Error',
+                text: 'Error al cambiar la contraseña',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }       
     };
 
     return (

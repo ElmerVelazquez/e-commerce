@@ -7,6 +7,7 @@ using E_Commerce.Interfaces;
 using E_Commerce.Utilities;
 using Microsoft.AspNetCore.Cors;
 using System.Net.Mail;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace E_Commerce.Controllers
 {
@@ -24,11 +25,12 @@ namespace E_Commerce.Controllers
         [HttpPost("sendcode")]
         public async Task<IActionResult> Send([FromBody] string email)
         {
-            string codigo = _repo.SaveVerificationCode(email).Result.Value;
-            if (codigo == null) return BadRequest(Result.Fail("Email no encontrado"));
+            var respons = _repo.SaveVerificationCode(email);
+            string codigo = respons.Result.Value;
+            if (codigo == null) return BadRequest(respons.Result);
             const string subject = "Verificación correo";
-            var body = _repo.generatebody("LincolnTech verificación de registro", "Codigo de verificación",codigo);
-           
+            var body = _repo.generatebody("LincolnTech verificación de registro", "Codigo de verificación", codigo);
+
             try
             {
                 await _repo.SendEmailAsync(email, subject, body);
@@ -42,10 +44,10 @@ namespace E_Commerce.Controllers
 
         }
         [AllowAnonymous]
-        [HttpGet("checkcode")]
-        public async Task<IActionResult> Compare([FromQuery] string email, [FromQuery] string code)
+        [HttpPost("checkcode")]
+        public async Task<IActionResult> Compare(CheckCodeDto data)
         {
-            var respons = await _repo.CompareVerificationCode(email, code);
+            var respons = await _repo.CompareVerificationCode(data.Email, data.Code);
             if (respons.IsSuccess)
             {
                 return Ok(respons);
@@ -57,9 +59,9 @@ namespace E_Commerce.Controllers
 
         [AllowAnonymous]
         [HttpPost("passwordrecovery")]
-        public async Task<IActionResult> PasswordRecovery([FromQuery] string email, [FromQuery] string code, [FromBody] string newPassword)
+        public async Task<IActionResult> PasswordRecovery([FromBody] ChangePasswordDto data)
         {
-            var respons = await _repo.PasswordRecovery(email, code, newPassword);
+            var respons = await _repo.PasswordRecovery(data.Email, data.NewPassword);
             if (respons.IsSuccess)
             {
                 return Ok(respons);
@@ -70,13 +72,13 @@ namespace E_Commerce.Controllers
         }
         [AllowAnonymous]
         [HttpPost("SendVerificationUrl")]
-        public async Task<IActionResult> SendVerificationUrlAsync(string email, string UrlPageVerification)
+        public async Task<IActionResult> SendVerificationUrlAsync(SendUrlDto data)
         {
-            string code = _repo.SaveVerificationCode(email).Result.Value;
+            string code = _repo.SaveVerificationCode(data.Email).Result.Value;
             if (code == null) return BadRequest(Result.Fail("Email no encontrado"));
 
             //var verificationLink = Url.Action("Compare", "EmailVerification", new { email, code}, Request.Scheme);
-            var verificationLink = UrlPageVerification + $"?email={email}&code={code}";
+            var verificationLink = data.UrlPageVerification + $"?email={data.Email}&code={code}";
             var message = new MailMessage();
             var subject = "Account Verification";
             var body = _repo.generatebody("LincolnTech verificación de registro", "Codigo de verificación",
@@ -84,7 +86,7 @@ namespace E_Commerce.Controllers
 
             try
             {
-                await _repo.SendEmailAsync(email, subject, body);
+                await _repo.SendEmailAsync(data.Email, subject, body);
                 return Ok(Result.Success());
             }
             catch (Exception ex)
@@ -92,6 +94,24 @@ namespace E_Commerce.Controllers
                 return BadRequest(Result.Fail("Error al enviar el correo electronico: " + ex.Message));
 
             }
+
+        }
+        public class ChangePasswordDto
+        {
+            public required string Email { get; set; }
+            public required string NewPassword { get; set; }
+
+        }
+        public class CheckCodeDto
+        {
+            public required string Email { get; set; }
+            public required string Code { get; set; }
+
+        }
+        public class SendUrlDto
+        {
+            public required string Email { get; set; }
+            public required string UrlPageVerification { get; set; }
 
         }
     }
